@@ -28,7 +28,7 @@ function createWindow() {
       contextIsolation: false, // Disable context isolation for this use case
       webviewTag: true // Enable webview tag for tabs
     },
-    icon: path.join(__dirname, 'grok.png'),
+    icon: path.join(__dirname, 'AIB.ico'),
     title: 'AIB'
   });
 

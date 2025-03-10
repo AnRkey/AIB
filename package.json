@@ -50,7 +50,7 @@
           ]
         }
       ],
-      "icon": "src/grok.png",
+      "icon": "src/AIB_logo.png",
       "sign": null,
       "forceCodeSigning": false
     },
