@@ -249,7 +249,7 @@
     .welcome-text {
       position: absolute;
       top: 5px;
-      left: 20px;
+      left: 10px;
       font-size: 14px;
       color: #666;
       text-align: left;
@@ -274,6 +274,39 @@
       height: 100%;
       border: none;
     }
+
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -30px;
+      right: 0;
+      transform: none;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 1000;
+    }
+
+    .tooltip.show-tooltip::after {
+      opacity: 1;
+    }
+
+    /* Add a special class for the right-side controls */
+    .right-controls .tooltip::after {
+      /* Special positioning for right-side controls */
+      right: 0; 
+      left: auto;
+    }
   </style>
 </head>
 <body>
@@ -293,8 +326,8 @@
         <button class="tabs-scroll-button right">&gt;</button>
       </div>
       <div class="right-controls">
-        <button class="toolbar-button" id="instance-button">+Instance</button>
-        <button class="toolbar-button" id="aot-button">AOT</button>
+        <button class="toolbar-button tooltip" id="instance-button" data-tooltip="Open a new window">+Window</button>
+        <button class="toolbar-button tooltip" id="aot-button" data-tooltip="Always On Top">AOT</button>
       </div>
     </div>
     <div class="main-content" id="views">
@@ -335,6 +368,13 @@
               this.createTab(url);
             }
           });
+        });
+        
+        // Add window resize event listener to update scroll buttons
+        window.addEventListener('resize', () => {
+          if (this.updateScrollButtonsCallback) {
+            this.updateScrollButtonsCallback();
+          }
         });
         
         // Set up Always on Top button
@@ -651,6 +691,23 @@
     // Initialize the tab manager when the DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
       tabManager.init();
+      
+      // Set up tooltips with delay
+      const tooltipElements = document.querySelectorAll('.tooltip');
+      tooltipElements.forEach(element => {
+        let tooltipTimeout;
+        
+        element.addEventListener('mouseenter', () => {
+          tooltipTimeout = setTimeout(() => {
+            element.classList.add('show-tooltip');
+          }, 250);
+        });
+        
+        element.addEventListener('mouseleave', () => {
+          clearTimeout(tooltipTimeout);
+          element.classList.remove('show-tooltip');
+        });
+      });
     });
   </script>
 </body>
