@@ -1,4 +1,4 @@
-# AIB - AI Browser
+# AIB - AI Browser (This document is a work in progress)
 
 AIB is a desktop application that provides a convenient way to access various AI services in a tabbed browser interface.
 
@@ -6,11 +6,10 @@ AIB is a desktop application that provides a convenient way to access various AI
 
 - Simple, clean interface optimized for AI interactions
 - Support for multiple services:
-  - Grok
   - ChatGPT
   - Claude
   - Google Gemini 
-  - Google AI Studio
+  - Grok
 - Tab-based browsing with the ability to open multiple AI services at once
 - "Always on top" mode to keep the application visible while working in other windows
 - Ability to launch multiple instances of the application
@@ -58,7 +57,7 @@ npm run build
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the GNU GPL v2 License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
