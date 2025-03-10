@@ -1,69 +1,106 @@
-# AIB - AI Browser (This document is a work in progress)
+# AIB - AI Browser v.1.0.0-b
 
-AIB is a desktop application that provides a convenient way to access various AI services in a tabbed browser interface.
+![Logo](src/AIB_logo.png)
+
+## Description
+AIB is a desktop application that provides a convenient way to access various AI services in a tabbed browser interface. It offers a simple, clean interface optimized for AI interactions.
+
+## Screenshot
+![Screenshot](screenshot.png)
 
 ## Features
-
 - Simple, clean interface optimized for AI interactions
 - Support for multiple services:
-  - ChatGPT
-  - Claude
-  - Google Gemini 
-  - Grok
+  - ChatGPT (chat.openai.com)
+  - Claude (claude.ai)
+  - Google Gemini (gemini.google.com)
+  - Grok (grok.com)
 - Tab-based browsing with the ability to open multiple AI services at once
 - "Always on top" mode to keep the application visible while working in other windows
 - Ability to launch multiple instances of the application
 
-## Installation
+## Download
+[Download AIB_Installer-v1.0.0-b.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b/AIB_Installer-v1.0.0-b.exe)
+[Download AIB_Portable-v1.0.0-b.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b/AIB_Portable-v1.0.0-b.exe)
 
-### Windows
+## Prerequisites for use
+- Windows 10 or 11
+- Internet connection
+- Accounts for the AI services you wish to use
 
-1. Download the latest release from the releases page
-2. Run the installer or use the portable version
+## Prerequisites for building
+- Windows 10 or 11
+- Internet connection
+- Node.js 14+ 
+- npm or yarn
 
-### From Source
+## Project Structure
+- `src/` - Contains the main Electron application code
+  - `main.js` - Main Electron process
+  - `preload.js` - Preload script for the renderer process
+  - `renderer.js` - Renderer process code
+  - `custom-tabs.js` - Custom tabs implementation
+  - `aib.png` - Application icon
+- `index.html` - Main application HTML
+- `styles.css` - Application styles
+- `build.bat` - Build script for Windows
 
-1. Clone this repository
-2. Install dependencies with `npm install`
-3. Run the application with `npm start`
-4. Build with `npm run build`
+## Build AIB
+1. Install Node.js from [nodejs.org](https://nodejs.org/).
+2. Clone this repository or download the files.
+3. Install dependencies with `npm install`
+4. Run the application with `npm start`
+5. Build with `npm run build`
+
+The build process will:
+- Clean previous build files
+- Create the build directory
+- Install project dependencies if needed
+- Build the application
+- All build outputs will be placed in the `build` directory.
 
 ## Usage
-
 - Click on any AI service button in the left sidebar to open it in the current tab or create a new tab
 - Use the "+" button in the tab bar to create a new tab
 - Toggle "Always on top" to keep the window visible on top of other applications
 - Click the "+ Instance" button to open a new instance of the application
 
-## Development
+## Support
+Need help? Found a bug? Have a feature request? Please submit an issue on GitHub:
 
-### Prerequisites
+[![Submit an Issue](https://img.shields.io/github/issues/AnRkey/AIB?style=for-the-badge)](https://github.com/AnRkey/AIB/issues/new/choose)
 
-- Node.js 14+
-- npm or yarn
+When submitting an issue, please include:
+1. Your operating system version
+2. Application version you're using
+3. Detailed steps to reproduce the problem
+4. Screenshots if applicable
+5. Any error messages you received
 
-### Setup
+This helps me address your problem more efficiently. You can also check if your issue has already been reported by browsing the [existing issues](https://github.com/AnRkey/AIB/issues).
 
-```bash
-# Install dependencies
-npm install
+## Feedback
+Your feedback is valuable and helps improve AIB! Here are ways to provide feedback:
 
-# Run the app
-npm start
+- **Feature Requests**: Have an idea to make AIB better? [Submit a feature request](https://github.com/AnRkey/AIB/issues/new?labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D) on GitHub.
+- **General Feedback**: For general comments, suggestions, or experiences using the application, you can:
+  - Send an email to anrkey@gmail.com with the subject "AIB Feedback"
+  - Leave a comment on the [releases page](https://github.com/AnRkey/AIB/releases)
 
-# Build the app
-npm run build
-```
+All feedback is reviewed and considered for future updates. Thank you for helping make AIB better!
 
 ## License
+This project is licensed under the GNU General Public License version 2.0 (GPL-2.0). See the [LICENSE](LICENSE) file for details.
 
-This project is licensed under the GNU GPL v2 License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Built with Electron
-- Uses a native browser approach to respect websites' security requirements
+## Contact
+Contact an R key at anrkey@gmail.com
 
 ## Disclaimer
-
 This app is not affiliated with any of the AI services it provides access to. It is simply a browser interface for accessing these services.
+
+## Copyright Notice
+The application icons and logos are either created for this project or found online.
+If you are from any of the AI companies and if my use of any artwork is a problem, please let me know and I'll remove it.
+
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
