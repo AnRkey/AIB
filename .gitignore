@@ -1,0 +1,11 @@
+# this file
+#.gitignore
+
+# Build output
+build/
+
+#Node modules
+node_modules/
+
+# OS specific files
+Thumbs.db

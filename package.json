@@ -26,7 +26,7 @@
     "electron-tabs": "^1.0.4"
   },
   "devDependencies": {
-    "electron": "^34.3.0",
+    "electron": "^34.3.2",
     "electron-builder": "^25.1.8"
   },
   "build": {
@@ -39,11 +39,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "src/grok.png",

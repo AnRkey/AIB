@@ -7,6 +7,7 @@ echo            AIB Build Script
 echo ========================================
 echo.
 
+
 :: Create build directory if it doesn't exist
 if not exist "build" (
     mkdir build

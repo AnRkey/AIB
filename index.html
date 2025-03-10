@@ -130,6 +130,13 @@
       position: relative;
     }
 
+    .tab-favicon {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      flex-shrink: 0;
+    }
+
     .tab.active {
       background-color: #fff;
     }
@@ -217,6 +224,37 @@
       position: relative;
     }
 
+    .welcome-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #f5f5f5;
+      z-index: 0;
+    }
+
+    .welcome-logo {
+      width: 75%;
+      height: 75%;
+      max-height: 75vh;
+      object-fit: contain;
+      opacity: 0.8;
+    }
+
+    .welcome-text {
+      position: absolute;
+      top: 5px;
+      left: 30px;
+      font-size: 14px;
+      color: #666;
+      text-align: left;
+    }
+
     .view {
       position: absolute;
       top: 0;
@@ -224,6 +262,7 @@
       width: 100%;
       height: 100%;
       display: none;
+      z-index: 1;
     }
 
     .view.active {
@@ -242,10 +281,10 @@
     <div class="toolbar">
       <div class="left-controls">
         <button class="toolbar-button" data-url="https://grok.com">Grok</button>
-        <button class="toolbar-button" data-url="https://chat.openai.com">GPT</button>
+        <button class="toolbar-button" data-url="https://chat.openai.com">ChatGPT</button>
         <button class="toolbar-button" data-url="https://claude.ai">Claude</button>
         <button class="toolbar-button" data-url="https://gemini.google.com">Gemini</button>
-        <button class="toolbar-button" data-url="https://aistudio.google.com">AI Studio</button>
+        <button class="toolbar-button" data-url="https://aistudio.google.com">Google AI Studio</button>
       </div>
       <div class="tabs-container">
         <button class="tabs-scroll-button left">&lt;</button>
@@ -255,11 +294,16 @@
         <button class="tabs-scroll-button right">&gt;</button>
       </div>
       <div class="right-controls">
-        <button class="control-button" id="instance-button">+Instance</button>
-        <div class="control-button" id="aot-button">AOT</div>
+        <button class="toolbar-button" id="instance-button">+Instance</button>
+        <button class="toolbar-button" id="aot-button">AOT</button>
       </div>
     </div>
-    <div class="main-content" id="views"></div>
+    <div class="main-content" id="views">
+      <div class="welcome-screen" id="welcome-screen">
+        <img src="src/logo.svg" class="welcome-logo" alt="AIB Logo">
+        <div class="welcome-text">Choose an AI to start chatting with...</div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -271,10 +315,11 @@
       viewsContainer: document.getElementById('views'),
       newTabButton: null,
       scrollAmount: 200, // Amount to scroll in pixels
+      lastOpenedUrl: 'https://grok.com', // Default URL for new tabs
       
       init() {
-        // Create the new tab button
-        this.createNewTabButton();
+        // No longer creating the new tab button initially
+        // We'll create it after the first tab is opened
         
         // Set up tab scrolling
         this.setupTabScrolling();
@@ -285,17 +330,10 @@
           button.addEventListener('click', () => {
             const url = button.getAttribute('data-url');
             if (url) {
-              if (this.activeTabId) {
-                // Update the active tab's URL
-                const webview = document.querySelector(`#view-${this.activeTabId} webview`);
-                if (webview) {
-                  webview.src = url;
-                  this.updateTabTitle(this.activeTabId, url);
-                }
-              } else {
-                // Create a new tab with the URL
-                this.createTab(url);
-              }
+              // Update the last opened URL
+              this.lastOpenedUrl = url;
+              // Always create a new tab when clicking a service button
+              this.createTab(url);
             }
           });
         });
@@ -321,8 +359,7 @@
           ipcRenderer.invoke('create-new-instance');
         });
         
-        // Create initial tab
-        this.createTab('https://grok.com');
+        // No initial tab - we'll let the user choose by clicking an AI service button
       },
 
       setupTabScrolling() {
@@ -385,20 +422,21 @@
           this.newTabButton.className = 'new-tab-button';
           this.newTabButton.textContent = '+';
           this.newTabButton.addEventListener('click', () => {
-            this.createTab('https://grok.com');
+            // Use the last opened URL for the new tab
+            this.createTab(this.lastOpenedUrl);
           });
+          
+          // Add it to the tabs container
+          this.tabsContainer.appendChild(this.newTabButton);
         }
-        
-        // Add it to the tabs container
-        this.tabsContainer.appendChild(this.newTabButton);
       },
       
       updateNewTabButtonPosition() {
         // Move the new tab button to the end of the tabs list
         if (this.newTabButton && this.newTabButton.parentNode) {
           this.newTabButton.parentNode.removeChild(this.newTabButton);
+          this.tabsContainer.appendChild(this.newTabButton);
         }
-        this.tabsContainer.appendChild(this.newTabButton);
         
         // Check if we need to update scroll buttons
         if (this.updateScrollButtonsCallback) {
@@ -407,6 +445,9 @@
       },
       
       createTab(url) {
+        // Hide the welcome screen when creating a tab
+        document.getElementById('welcome-screen').style.display = 'none';
+        
         const tabId = 'tab-' + Date.now();
         
         // Create tab element
@@ -414,6 +455,7 @@
         tabElement.className = 'tab';
         tabElement.id = tabId;
         tabElement.innerHTML = `
+          <img class="tab-favicon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="">
           <div class="tab-title">New Tab</div>
           <button class="tab-close">×</button>
         `;
@@ -429,9 +471,14 @@
         
         viewElement.appendChild(webview);
         
-        // Add to DOM - insert before the new tab button
+        // Add to DOM
         this.tabsContainer.appendChild(tabElement);
         this.viewsContainer.appendChild(viewElement);
+        
+        // Create the new tab button if this is the first tab
+        if (this.tabs.length === 0) {
+          this.createNewTabButton();
+        }
         
         // Update the new tab button position
         this.updateNewTabButtonPosition();
@@ -450,6 +497,10 @@
         // Set up webview events
         webview.addEventListener('page-title-updated', (e) => {
           this.updateTabTitle(tabId, null, e.title);
+        });
+        
+        webview.addEventListener('page-favicon-updated', (e) => {
+          this.updateTabFavicon(tabId, e.favicons[0]);
         });
         
         webview.addEventListener('did-start-loading', () => {
@@ -550,6 +601,16 @@
             }
           }
           
+          // If no tabs left, remove the new tab button and show welcome screen
+          if (this.tabs.length === 0) {
+            if (this.newTabButton) {
+              this.newTabButton.remove();
+              this.newTabButton = null;
+            }
+            // Show the welcome screen when no tabs are left
+            document.getElementById('welcome-screen').style.display = 'flex';
+          }
+          
           // Update scroll buttons
           if (this.updateScrollButtonsCallback) {
             setTimeout(this.updateScrollButtonsCallback, 100);
@@ -573,6 +634,16 @@
                 titleElement.textContent = url;
               }
             }
+          }
+        }
+      },
+      
+      updateTabFavicon(tabId, faviconUrl) {
+        const tab = this.tabs.find(tab => tab.id === tabId);
+        if (tab && faviconUrl) {
+          const faviconElement = tab.element.querySelector('.tab-favicon');
+          if (faviconElement) {
+            faviconElement.src = faviconUrl;
           }
         }
       }
