@@ -24,6 +24,8 @@ AIB is a desktop application that provides a convenient way to access various AI
 
 [Download AIB_Portable-v1.0.0-b.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b/AIB_Portable-v1.0.0-b.exe)
 
+[Download AIB_Portable-v1.0.0-b.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b/AIB_Portable-v1.0.0-b.zip)
+
 ## Prerequisites for use
 - Windows 10 or 11
 - Internet connection
