@@ -512,6 +512,8 @@
         // Add media permissions for voice chat
         webview.setAttribute('allowtransparency', 'false');
         webview.setAttribute('autosize', 'true');
+        // Add Chrome-like user agent for compatibility with services like ChatGPT voice
+        webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.89 Safari/604.1');
         
         viewElement.appendChild(webview);
         
