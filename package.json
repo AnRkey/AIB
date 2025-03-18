@@ -6,11 +6,12 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --enable-devtools",
-    "build": "electron-builder --win --x64",
+    "clean": "rimraf build",
+    "build": "npm run clean && electron-builder --win --x64",
     "pack": "electron-builder --dir",
-    "build-portable": "electron-builder --win portable",
-    "build-dir": "electron-builder --dir",
-    "build-installer": "electron-builder --win nsis"
+    "build-portable": "npm run clean && electron-builder --win portable",
+    "build-dir": "npm run clean && electron-builder --dir",
+    "build-installer": "npm run clean && electron-builder --win nsis"
   },
   "keywords": [
     "electron",
@@ -28,7 +29,8 @@
   },
   "devDependencies": {
     "electron": "^34.3.2",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "rimraf": "^6.0.1"
   },
   "build": {
     "appId": "com.aib.desktop",
