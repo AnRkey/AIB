@@ -507,6 +507,11 @@
         const webview = document.createElement('webview');
         webview.src = url;
         webview.partition = 'persist:aib';
+        webview.setAttribute('allowpopups', 'true');
+        webview.setAttribute('webpreferences', 'contextIsolation=false');
+        // Add media permissions for voice chat
+        webview.setAttribute('allowtransparency', 'false');
+        webview.setAttribute('autosize', 'true');
         
         viewElement.appendChild(webview);
         
@@ -548,6 +553,22 @@
         
         webview.addEventListener('did-stop-loading', () => {
           tabElement.classList.remove('loading');
+        });
+        
+        // Add permission request event listener for media
+        webview.addEventListener('permission-request', (event) => {
+          // Auto approve media permission requests (microphone, camera, etc.)
+          if (event.permission === 'media' || 
+              event.permission === 'audioCapture' || 
+              event.permission === 'videoCapture' || 
+              event.permission === 'geolocation' ||
+              event.permission === 'notifications' ||
+              event.permission === 'fullscreen') {
+            event.request.grant();
+          } else {
+            // Deny other permissions by default
+            event.request.deny();
+          }
         });
         
         // Store tab info

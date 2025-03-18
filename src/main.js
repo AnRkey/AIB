@@ -1,5 +1,17 @@
-const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron');
+const { app, BrowserWindow, shell, Menu, ipcMain, session } = require('electron');
 const path = require('path');
+
+// Log all command line arguments for debugging
+console.log('Command line arguments:');
+console.log(process.argv);
+
+// Check if DevTools should be enabled
+const shouldEnableDevTools = process.argv.some(arg => 
+  arg === '--enable-devtools' || 
+  arg === '--enable-devtools-for-subframes' || 
+  arg === '--devtools'
+);
+console.log('DevTools enabled:', shouldEnableDevTools);
 
 // Keep a global reference of the window objects to prevent garbage collection
 let mainWindow;
@@ -57,14 +69,42 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true, // Enable Node.js integration
       contextIsolation: false, // Disable context isolation for this use case
-      webviewTag: true // Enable webview tag for tabs
+      webviewTag: true, // Enable webview tag for tabs
+      webSecurity: true, // Maintain web security
+      allowRunningInsecureContent: false, // Don't allow running insecure content
+      devTools: true // Always enable DevTools capability
     },
     icon: path.join(__dirname, 'AIB.ico'),
     title: 'AIB'
   });
 
+  // Set up DevTools keyboard shortcuts if enabled via command line
+  if (shouldEnableDevTools) {
+    // Register F12 shortcut to toggle DevTools for the main window
+    newWindow.webContents.on('before-input-event', (event, input) => {
+      if (input.key === 'F12') {
+        newWindow.webContents.toggleDevTools();
+        event.preventDefault();
+      }
+    });
+    
+    // Enable DevTools for webviews
+    newWindow.webContents.on('did-attach-webview', (event, webContents) => {
+      // Register F12 shortcut for webviews
+      webContents.on('before-input-event', (event, input) => {
+        if (input.key === 'F12') {
+          webContents.toggleDevTools();
+          event.preventDefault();
+        }
+      });
+    });
+  }
+
   // Disable the menu bar
   Menu.setApplicationMenu(null);
+
+  // Set up permission handling
+  setupPermissionHandling(newWindow);
 
   // Load the index.html file
   newWindow.loadFile(path.join(__dirname, '../index.html'));
@@ -127,6 +167,38 @@ function setupUrlHandling(window) {
       shell.openExternal(url);
       return { action: 'deny' };
     }
+  });
+}
+
+// Set up permission handling for media devices
+function setupPermissionHandling(window) {
+  // Define permissions that should be automatically granted
+  const grantedPermissions = [
+    'media', // Microphone and camera
+    'mediaKeySystem', // For DRM-protected content
+    'geolocation',
+    'notifications',
+    'fullscreen'
+  ];
+
+  // Listen for permission requests
+  window.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+    // Grant permission if it's in our allowed list
+    if (grantedPermissions.includes(permission)) {
+      callback(true);
+      return;
+    }
+
+    // Deny by default, can be expanded to show a dialog for other permissions
+    callback(false);
+  });
+
+  // Set up permission check handler for webviews
+  window.webContents.session.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
+    if (grantedPermissions.includes(permission)) {
+      return true;
+    }
+    return false;
   });
 }
 
