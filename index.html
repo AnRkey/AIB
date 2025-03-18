@@ -454,6 +454,7 @@ Description: A desktop application that provides a convenient way to access vari
       </div>
       <!-- Right side of toolbar with control buttons -->
       <div class="right-controls">
+        <button class="toolbar-button tooltip" id="refresh-button" data-tooltip="Refresh">R</button>
         <button class="toolbar-button tooltip" id="instance-button" data-tooltip="Open a new window">+Window</button>
         <button class="toolbar-button tooltip" id="aot-button" data-tooltip="Always On Top">AOT</button>
       </div>
@@ -530,6 +531,19 @@ Description: A desktop application that provides a convenient way to access vari
         instanceButton.addEventListener('click', () => {
           const { ipcRenderer } = require('electron');
           ipcRenderer.invoke('create-new-instance');
+        });
+        
+        // Set up Refresh button
+        const refreshButton = document.getElementById('refresh-button');
+        refreshButton.addEventListener('click', () => {
+          // Find the active tab and reload its webview
+          const activeTab = this.tabs.find(tab => tab.id === this.activeTabId);
+          if (activeTab && activeTab.webview) {
+            console.log('Reloading active tab:', activeTab.id);
+            activeTab.webview.reload();
+          } else {
+            console.log('No active tab to reload');
+          }
         });
         
         // No initial tab - we'll let the user choose by clicking an AI service button
