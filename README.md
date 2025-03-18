@@ -43,10 +43,25 @@ AIB is a desktop application that provides a convenient way to access various AI
   - `preload.js` - Preload script for the renderer process
   - `renderer.js` - Renderer process code
   - `custom-tabs.js` - Custom tabs implementation
-  - `aib.png` - Application icon
-- `index.html` - Main application HTML
+  - `AIB.ico` - Application icon
+  - `AIB_logo.png` - Application logo
+  - `AIB_background.jpg` - Background image for welcome screen
+- `index.html` - Main application HTML (fully documented with comments)
 - `styles.css` - Application styles
 - `build.bat` - Build script for Windows
+- `docs/` - Project documentation
+  - `user-guide.md` - User guide and instructions
+  - `developer-guide.md` - Developer documentation
+  - `architecture.md` - Architecture overview
+
+## Documentation
+The project includes comprehensive documentation in the `docs/` directory:
+
+- **User Guide**: Instructions for installing and using the application
+- **Developer Guide**: Information for developers who want to contribute or modify the code
+- **Architecture Overview**: Explanation of the application's structure and design principles
+
+For more details, see the [documentation](docs/).
 
 ## Build AIB
 1. Install Node.js from [nodejs.org](https://nodejs.org/).

@@ -219,6 +219,16 @@ function setupIpcHandlers() {
     return false;
   });
 
+  // Handle getting the current always-on-top state
+  ipcMain.handle('get-always-on-top', (event) => {
+    // Get the window that sent the request
+    const window = BrowserWindow.fromWebContents(event.sender);
+    if (window) {
+      return window.isAlwaysOnTop();
+    }
+    return false;
+  });
+
   // Handle new window creation within the same instance
   ipcMain.handle('create-new-instance', () => {
     // Create a new window in the same instance instead of spawning a new process

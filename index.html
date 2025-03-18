@@ -1,12 +1,73 @@
+<!-- 
+This is the main HTML file for the AIB (AI Browser) application.
+Author: AnRkey
+Version: 1.0.0-b2
+Description: A desktop application that provides a convenient way to access various AI services in a tabbed browser interface.
+-->
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- Character encoding and security policy -->
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
   <title>AI Browser v1.0.0-b2</title>
+  <!-- External stylesheet -->
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Basic styling for the tabs */
+    /* 
+    CSS variables for theming support.
+    Light mode is the default theme, with dark mode applied via media query.
+    */
+    :root {
+      /* Light mode colors (default) */
+      --bg-color: #fff;
+      --text-color: #333;
+      --toolbar-bg: #f5f5f5;
+      --border-color: #ddd;
+      --tab-bg: #F9F8F6;
+      --tab-active-bg: #fff;
+      --button-bg: #fff;
+      --button-hover-bg: #e9e9e9;
+      --button-active-bg: #007bff;
+      --button-active-text: white;
+      --control-button-border: #ccc;
+      --button-shadow: rgba(0,0,0,0.1);
+      --welcome-bg: #fff;
+      --welcome-text: #666;
+      --tab-close-hover: #ddd;
+      --scroll-button-bg: rgba(245, 245, 245, 0.9);
+      --scroll-button-hover: rgba(230, 230, 230, 0.9);
+      --tooltip-bg: rgba(0, 0, 0, 0.8);
+      --tooltip-text: white;
+    }
+
+    /* Dark mode theme applied via media query when system uses dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark mode colors */
+        --bg-color: #222;
+        --text-color: #eee;
+        --toolbar-bg: #333;
+        --border-color: #555;
+        --tab-bg: #2a2a2a;
+        --tab-active-bg: #3a3a3a;
+        --button-bg: #444;
+        --button-hover-bg: #555;
+        --button-active-bg: #0066cc;
+        --button-active-text: white;
+        --control-button-border: #666;
+        --button-shadow: rgba(0,0,0,0.3);
+        --welcome-bg: #222;
+        --welcome-text: #aaa;
+        --tab-close-hover: #555;
+        --scroll-button-bg: rgba(51, 51, 51, 0.9);
+        --scroll-button-hover: rgba(68, 68, 68, 0.9);
+        --tooltip-bg: rgba(0, 0, 0, 0.8);
+        --tooltip-text: white;
+      }
+    }
+
+    /* Basic styling for the application */
     body {
       margin: 0;
       padding: 0;
@@ -14,59 +75,70 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      background-color: var(--bg-color);
+      color: var(--text-color);
     }
 
+    /* Main container for the application */
     .app-container {
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
 
+    /* Toolbar containing AI service buttons and controls */
     .toolbar {
       display: flex;
       height: 34px;
-      background-color: #f5f5f5;
-      border-bottom: 1px solid #ddd;
+      background-color: var(--toolbar-bg);
+      border-bottom: 1px solid var(--border-color);
       padding: 0 5px;
     }
 
+    /* Left side of the toolbar containing AI service buttons */
     .left-controls {
       display: flex;
       align-items: center;
       padding-right: 5px;
-      border-right: 1px solid #ddd;
+      border-right: 1px solid var(--border-color);
     }
 
+    /* Styling for toolbar buttons (AI service buttons) */
     .toolbar-button {
       padding: 4px 8px;
       margin: 0 2px;
       border: none;
       border-radius: 3px;
-      background-color: #fff;
+      background-color: var(--button-bg);
+      color: var(--text-color);
       cursor: pointer;
       font-size: 12px;
       transition: background-color 0.2s;
       text-align: center;
       height: 26px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 2px var(--button-shadow);
       white-space: nowrap;
     }
 
+    /* Hover state for toolbar buttons */
     .toolbar-button:hover {
-      background-color: #e9e9e9;
+      background-color: var(--button-hover-bg);
     }
 
+    /* Active state for toolbar buttons */
     .toolbar-button.active {
-      background-color: #007bff;
-      color: white;
+      background-color: var(--button-active-bg);
+      color: var(--button-active-text);
     }
 
+    /* Container for tabs */
     .tabs-container {
       display: flex;
       flex-grow: 1;
       position: relative;
     }
 
+    /* Buttons for scrolling tabs when many are open */
     .tabs-scroll-button {
       position: absolute;
       top: 0;
@@ -75,9 +147,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(245, 245, 245, 0.9);
+      background-color: var(--scroll-button-bg);
       border: none;
-      color: #555;
+      color: var(--text-color);
       font-weight: bold;
       cursor: pointer;
       z-index: 5;
@@ -85,30 +157,36 @@
       transition: opacity 0.2s ease;
     }
 
+    /* Hover state for tab scroll buttons */
     .tabs-scroll-button:hover {
-      background-color: rgba(230, 230, 230, 0.9);
+      background-color: var(--scroll-button-hover);
     }
 
+    /* Left scroll button */
     .tabs-scroll-button.left {
       left: 0;
-      border-right: 1px solid #ddd;
+      border-right: 1px solid var(--border-color);
     }
 
+    /* Right scroll button */
     .tabs-scroll-button.right {
       right: 0;
-      border-left: 1px solid #ddd;
+      border-left: 1px solid var(--border-color);
     }
 
+    /* Visible state for scroll buttons */
     .tabs-scroll-button.visible {
       opacity: 1;
     }
 
+    /* Wrapper for tabs with overflow control */
     .tabs-wrapper {
       flex-grow: 1;
       overflow: hidden;
       position: relative;
     }
 
+    /* Container for tab elements */
     .tabs {
       display: flex;
       position: absolute;
@@ -116,20 +194,23 @@
       transition: left 0.3s ease;
     }
 
+    /* Individual tab styling */
     .tab {
       display: flex;
       align-items: center;
-      border-right: 1px solid #ddd;
+      border-right: 1px solid var(--border-color);
       min-width: 180px;
       max-width: 220px;
       padding: 0 10px;
       height: 34px;
-      background-color: #F9F8F6;
+      background-color: var(--tab-bg);
+      color: var(--text-color);
       cursor: pointer;
       overflow: hidden;
       position: relative;
     }
 
+    /* Favicon in the tab */
     .tab-favicon {
       width: 16px;
       height: 16px;
@@ -137,10 +218,12 @@
       flex-shrink: 0;
     }
 
+    /* Active tab styling */
     .tab.active {
-      background-color: #fff;
+      background-color: var(--tab-active-bg);
     }
 
+    /* Tab title styling with ellipsis for overflow */
     .tab-title {
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -148,6 +231,7 @@
       margin-right: 20px;
     }
 
+    /* Close button for tabs */
     .tab-close {
       position: absolute;
       right: 5px;
@@ -162,12 +246,15 @@
       border-radius: 50%;
       font-size: 14px;
       cursor: pointer;
+      color: var(--text-color);
     }
 
+    /* Hover state for tab close button */
     .tab-close:hover {
-      background-color: #ddd;
+      background-color: var(--tab-close-hover);
     }
 
+    /* "+" button for creating new tabs */
     .new-tab-button {
       background: none;
       border: none;
@@ -179,23 +266,27 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      color: var(--text-color);
     }
 
+    /* Hover state for new tab button */
     .new-tab-button:hover {
-      background-color: #ddd;
+      background-color: var(--tab-close-hover);
     }
 
+    /* Right side of the toolbar containing control buttons */
     .right-controls {
       display: flex;
       align-items: center;
       padding-left: 5px;
-      border-left: 1px solid #ddd;
+      border-left: 1px solid var(--border-color);
       flex-shrink: 0;
     }
 
+    /* Styling for control buttons (Always on Top, New Instance) */
     .control-button {
       background: none;
-      border: 1px solid #ccc;
+      border: 1px solid var(--control-button-border);
       border-radius: 3px;
       padding: 2px 6px;
       margin: 0 2px;
@@ -207,23 +298,28 @@
       justify-content: center;
       transition: all 0.2s ease;
       white-space: nowrap;
+      color: var(--text-color);
     }
 
+    /* Hover state for control buttons */
     .control-button:hover {
-      background-color: #e6e6e6;
+      background-color: var(--button-hover-bg);
     }
 
+    /* Active state for control buttons */
     .control-button.active {
       background-color: #4CAF50;
       color: white;
       border-color: #4CAF50;
     }
 
+    /* Main content area containing webviews */
     .main-content {
       flex-grow: 1;
       position: relative;
     }
 
+    /* Welcome screen shown when no tabs are open */
     .welcome-screen {
       position: absolute;
       top: 0;
@@ -234,10 +330,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background-color: #fff;
+      background-color: var(--welcome-bg);
       z-index: 0;
     }
 
+    /* Welcome screen logo */
     .welcome-logo {
       width: 100%;
       height: 100%;
@@ -246,15 +343,37 @@
       opacity: 0.8;
     }
 
+    /* Text shown on the welcome screen */
     .welcome-text {
       position: absolute;
       top: 5px;
       left: 10px;
       font-size: 14px;
-      color: #666;
+      color: var(--welcome-text);
       text-align: left;
     }
 
+    /* App title on welcome screen */
+    .app-title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-title-main {
+      font-size: 40px;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .app-title-version {
+      font-size: 15px;
+      color: var(--text-color);
+      margin-top: 5px;
+    }
+
+    /* Container for webviews */
     .view {
       position: absolute;
       top: 0;
@@ -265,28 +384,32 @@
       z-index: 1;
     }
 
+    /* Active view */
     .view.active {
       display: block;
     }
 
+    /* Styling for Electron webview component */
     webview {
       width: 100%;
       height: 100%;
       border: none;
     }
 
+    /* Tooltip container */
     .tooltip {
       position: relative;
     }
 
+    /* Tooltip text */
     .tooltip::after {
       content: attr(data-tooltip);
       position: absolute;
       bottom: -30px;
       right: 0;
       transform: none;
-      background-color: rgba(0, 0, 0, 0.8);
-      color: white;
+      background-color: var(--tooltip-bg);
+      color: var(--tooltip-text);
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 12px;
@@ -297,27 +420,31 @@
       z-index: 1000;
     }
 
+    /* Visible state for tooltips */
     .tooltip.show-tooltip::after {
       opacity: 1;
     }
 
-    /* Add a special class for the right-side controls */
+    /* Special positioning for tooltips in right controls */
     .right-controls .tooltip::after {
-      /* Special positioning for right-side controls */
       right: 0; 
       left: auto;
     }
   </style>
 </head>
 <body>
+  <!-- Main application container -->
   <div class="app-container">
+    <!-- Toolbar containing AI service buttons and controls -->
     <div class="toolbar">
+      <!-- Left side of toolbar with AI service buttons -->
       <div class="left-controls">
         <button class="toolbar-button" data-url="https://chat.openai.com">ChatGPT</button>
         <button class="toolbar-button" data-url="https://claude.ai">Claude</button>
         <button class="toolbar-button" data-url="https://gemini.google.com">Gemini</button>
         <button class="toolbar-button" data-url="https://grok.com">Grok</button>
       </div>
+      <!-- Tabs container -->
       <div class="tabs-container">
         <button class="tabs-scroll-button left">&lt;</button>
         <div class="tabs-wrapper">
@@ -325,30 +452,37 @@
         </div>
         <button class="tabs-scroll-button right">&gt;</button>
       </div>
+      <!-- Right side of toolbar with control buttons -->
       <div class="right-controls">
         <button class="toolbar-button tooltip" id="instance-button" data-tooltip="Open a new window">+Window</button>
         <button class="toolbar-button tooltip" id="aot-button" data-tooltip="Always On Top">AOT</button>
       </div>
     </div>
+    <!-- Main content area containing webviews -->
     <div class="main-content" id="views">
+      <!-- Welcome screen shown when no tabs are open -->
       <div class="welcome-screen" id="welcome-screen">
-        <img src="src/AIB_background.jpg" class="welcome-logo" alt="AIB Logo">
+        <div class="app-title">
+          <div class="app-title-main">AIB</div>
+          <div class="app-title-version">v1.0.0-b2</div>
+        </div>
         <div class="welcome-text">Choose an AI to start chatting with...</div>
       </div>
     </div>
   </div>
 
   <script>
-    // Simple tab management
+    // Tab management object
     const tabManager = {
-      tabs: [],
-      activeTabId: null,
-      tabsContainer: document.getElementById('tabs'),
-      viewsContainer: document.getElementById('views'),
-      newTabButton: null,
-      scrollAmount: 200, // Amount to scroll in pixels
+      tabs: [], // Array to store tab information
+      activeTabId: null, // Currently active tab ID
+      tabsContainer: document.getElementById('tabs'), // Container for tab elements
+      viewsContainer: document.getElementById('views'), // Container for webview elements
+      newTabButton: null, // Button to create new tabs
+      scrollAmount: 200, // Amount to scroll tabs in pixels
       lastOpenedUrl: 'https://grok.com', // Default URL for new tabs
       
+      // Initialize the tab manager
       init() {
         // No longer creating the new tab button initially
         // We'll create it after the first tab is opened
@@ -356,7 +490,7 @@
         // Set up tab scrolling
         this.setupTabScrolling();
         
-        // Set up toolbar buttons
+        // Set up toolbar buttons for AI services
         const toolbarButtons = document.querySelectorAll('.toolbar-button');
         toolbarButtons.forEach(button => {
           button.addEventListener('click', () => {
@@ -401,6 +535,7 @@
         // No initial tab - we'll let the user choose by clicking an AI service button
       },
 
+      // Set up tab scrolling functionality
       setupTabScrolling() {
         const tabsWrapper = document.querySelector('.tabs-wrapper');
         const leftScrollButton = document.querySelector('.tabs-scroll-button.left');
@@ -447,289 +582,269 @@
           updateScrollButtons();
         });
         
-        // Update scroll buttons when tabs change
+        // Store the update function for later use
         this.updateScrollButtonsCallback = updateScrollButtons;
-        
-        // Initial check
-        setTimeout(updateScrollButtons, 100);
       },
       
-      createNewTabButton() {
-        // Create the new tab button if it doesn't exist
-        if (!this.newTabButton) {
-          this.newTabButton = document.createElement('button');
-          this.newTabButton.className = 'new-tab-button';
-          this.newTabButton.textContent = '+';
-          this.newTabButton.addEventListener('click', () => {
-            // Use the last opened URL for the new tab
-            this.createTab(this.lastOpenedUrl);
-          });
-          
-          // Add it to the tabs container
-          this.tabsContainer.appendChild(this.newTabButton);
-        }
-      },
-      
-      updateNewTabButtonPosition() {
-        // Move the new tab button to the end of the tabs list
-        if (this.newTabButton && this.newTabButton.parentNode) {
-          this.newTabButton.parentNode.removeChild(this.newTabButton);
-          this.tabsContainer.appendChild(this.newTabButton);
-        }
-        
-        // Check if we need to update scroll buttons
-        if (this.updateScrollButtonsCallback) {
-          setTimeout(this.updateScrollButtonsCallback, 100);
-        }
-      },
-      
+      // Create a new tab with the specified URL
       createTab(url) {
+        // Generate a unique ID for the tab
+        const tabId = `tab-${Date.now()}`;
+        
         // Hide the welcome screen when creating a tab
         document.getElementById('welcome-screen').style.display = 'none';
         
-        const tabId = 'tab-' + Date.now();
-        
-        // Create tab element
+        // Create the tab element
         const tabElement = document.createElement('div');
         tabElement.className = 'tab';
-        tabElement.id = tabId;
-        tabElement.innerHTML = `
-          <img class="tab-favicon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="">
-          <div class="tab-title">New Tab</div>
-          <button class="tab-close">×</button>
-        `;
+        tabElement.dataset.tabId = tabId;
         
-        // Create view element with webview
-        const viewElement = document.createElement('div');
-        viewElement.className = 'view';
-        viewElement.id = 'view-' + tabId;
+        // Favicon element (empty initially, will be updated once the webview loads)
+        const favicon = document.createElement('img');
+        favicon.className = 'tab-favicon';
+        favicon.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Transparent placeholder
         
+        // Title element (initially set to the domain name)
+        const title = document.createElement('div');
+        title.className = 'tab-title';
+        title.textContent = new URL(url).hostname;
+        
+        // Close button
+        const closeButton = document.createElement('button');
+        closeButton.className = 'tab-close';
+        closeButton.innerHTML = '&times;';
+        closeButton.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent tab activation when clicking close
+          this.closeTab(tabId);
+        });
+        
+        // Add elements to the tab
+        tabElement.appendChild(favicon);
+        tabElement.appendChild(title);
+        tabElement.appendChild(closeButton);
+        
+        // Add event listener to activate the tab when clicked
+        tabElement.addEventListener('click', () => {
+          this.activateTab(tabId);
+        });
+        
+        // Create the webview element
         const webview = document.createElement('webview');
         webview.src = url;
         webview.partition = 'persist:aib';
         webview.setAttribute('allowpopups', 'true');
-        webview.setAttribute('webpreferences', 'contextIsolation=false');
-        // Add media permissions for voice chat
-        webview.setAttribute('allowtransparency', 'false');
-        webview.setAttribute('autosize', 'true');
-        // Add Chrome-like user agent for compatibility with services like ChatGPT voice
-        webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.89 Safari/604.1');
         
+        // Webview container
+        const viewElement = document.createElement('div');
+        viewElement.className = 'view';
+        viewElement.dataset.tabId = tabId;
         viewElement.appendChild(webview);
         
-        // Add to DOM
-        this.tabsContainer.appendChild(tabElement);
-        this.viewsContainer.appendChild(viewElement);
-        
-        // Create the new tab button if this is the first tab
+        // If this is the first tab, create the "new tab" button
         if (this.tabs.length === 0) {
           this.createNewTabButton();
         }
         
-        // Update the new tab button position
-        this.updateNewTabButtonPosition();
+        // Add the tab and view to their containers
+        this.tabsContainer.insertBefore(tabElement, this.newTabButton);
+        this.viewsContainer.appendChild(viewElement);
         
-        // Set up event listeners
-        tabElement.addEventListener('click', (e) => {
-          if (!e.target.classList.contains('tab-close')) {
-            this.activateTab(tabId);
-          }
-        });
-        
-        tabElement.querySelector('.tab-close').addEventListener('click', () => {
-          this.closeTab(tabId);
-        });
-        
-        // Set up webview events
-        webview.addEventListener('page-title-updated', (e) => {
-          this.updateTabTitle(tabId, null, e.title);
-        });
-        
-        webview.addEventListener('page-favicon-updated', (e) => {
-          this.updateTabFavicon(tabId, e.favicons[0]);
-        });
-        
-        webview.addEventListener('did-start-loading', () => {
-          tabElement.classList.add('loading');
-        });
-        
-        webview.addEventListener('did-stop-loading', () => {
-          tabElement.classList.remove('loading');
-        });
-        
-        // Add permission request event listener for media
-        webview.addEventListener('permission-request', (event) => {
-          // Auto approve media permission requests (microphone, camera, etc.)
-          if (event.permission === 'media' || 
-              event.permission === 'audioCapture' || 
-              event.permission === 'videoCapture' || 
-              event.permission === 'geolocation' ||
-              event.permission === 'notifications' ||
-              event.permission === 'fullscreen') {
-            event.request.grant();
-          } else {
-            // Deny other permissions by default
-            event.request.deny();
-          }
-        });
-        
-        // Store tab info
+        // Add the tab to our array
         this.tabs.push({
           id: tabId,
+          url: url,
           element: tabElement,
           view: viewElement,
           webview: webview
         });
         
-        // Activate this tab
+        // Set up webview event listeners
+        this.setupWebviewEvents(webview, tabId, tabElement, title, favicon);
+        
+        // Activate the new tab
         this.activateTab(tabId);
         
-        // If necessary, scroll to make new tab visible
-        this.scrollToTab(tabId);
-        
-        return tabId;
-      },
-      
-      scrollToTab(tabId) {
-        const tabElement = document.getElementById(tabId);
-        if (!tabElement) return;
-        
-        const tabsWrapper = document.querySelector('.tabs-wrapper');
-        const tabsElement = this.tabsContainer;
-        const tabPosition = tabElement.offsetLeft;
-        const tabWidth = tabElement.offsetWidth;
-        const wrapperWidth = tabsWrapper.offsetWidth;
-        const currentPosition = parseInt(tabsElement.style.left || '0', 10);
-        
-        // Check if tab is out of view to the right
-        if (tabPosition + tabWidth > wrapperWidth - currentPosition) {
-          const newPosition = -(tabPosition - wrapperWidth + tabWidth + 40); // Extra space for the new tab button
-          tabsElement.style.left = `${Math.min(0, newPosition)}px`;
-        }
-        
-        // Check if tab is out of view to the left
-        if (tabPosition < -currentPosition) {
-          tabsElement.style.left = `${-tabPosition}px`;
-        }
-        
-        // Update scroll buttons
+        // Update scroll buttons visibility
         if (this.updateScrollButtonsCallback) {
-          setTimeout(this.updateScrollButtonsCallback, 100);
+          this.updateScrollButtonsCallback();
+        }
+        
+        // Ensure the new tab is visible by scrolling if needed
+        this.scrollToTab(tabElement);
+      },
+      
+      // Create the "+" button for adding new tabs
+      createNewTabButton() {
+        // Create the new tab button if it doesn't already exist
+        if (!this.newTabButton) {
+          const newTabButton = document.createElement('button');
+          newTabButton.className = 'new-tab-button';
+          newTabButton.innerHTML = '+';
+          newTabButton.addEventListener('click', () => {
+            // Create a new tab with the last opened URL
+            this.createTab(this.lastOpenedUrl);
+          });
+          
+          // Add the button to the tabs container
+          this.tabsContainer.appendChild(newTabButton);
+          this.newTabButton = newTabButton;
         }
       },
       
+      // Set up event listeners for a webview
+      setupWebviewEvents(webview, tabId, tabElement, titleElement, faviconElement) {
+        // Update title when page title changes
+        webview.addEventListener('page-title-updated', (e) => {
+          titleElement.textContent = e.title;
+        });
+        
+        // Update favicon when page favicon changes
+        webview.addEventListener('page-favicon-updated', (e) => {
+          if (e.favicons && e.favicons.length > 0) {
+            faviconElement.src = e.favicons[0];
+          }
+        });
+        
+        // Handle new window creation (e.g., for pop-ups)
+        webview.addEventListener('new-window', (e) => {
+          // Create a new tab instead of opening a new window
+          this.createTab(e.url);
+        });
+        
+        // Set default handler for console messages in webviews (debugging)
+        webview.addEventListener('console-message', (e) => {
+          console.log('Webview console:', e.message);
+        });
+      },
+      
+      // Activate a tab by its ID
       activateTab(tabId) {
-        // Deactivate current active tab
+        // Deactivate the currently active tab
         if (this.activeTabId) {
-          const activeTab = this.tabs.find(tab => tab.id === this.activeTabId);
-          if (activeTab) {
-            activeTab.element.classList.remove('active');
-            activeTab.view.classList.remove('active');
+          const currentTab = this.tabs.find(tab => tab.id === this.activeTabId);
+          if (currentTab) {
+            currentTab.element.classList.remove('active');
+            currentTab.view.classList.remove('active');
           }
         }
         
-        // Activate new tab
-        const newActiveTab = this.tabs.find(tab => tab.id === tabId);
-        if (newActiveTab) {
-          newActiveTab.element.classList.add('active');
-          newActiveTab.view.classList.add('active');
-          this.activeTabId = tabId;
-          
-          // Scroll to make active tab visible
-          this.scrollToTab(tabId);
-        }
-      },
-      
-      closeTab(tabId) {
-        const tabIndex = this.tabs.findIndex(tab => tab.id === tabId);
-        if (tabIndex > -1) {
-          const tab = this.tabs[tabIndex];
-          
-          // Remove DOM elements
-          tab.element.remove();
-          tab.view.remove();
-          
-          // Remove from tabs array
-          this.tabs.splice(tabIndex, 1);
-          
-          // If we closed the active tab, activate another tab
-          if (this.activeTabId === tabId) {
-            if (this.tabs.length > 0) {
-              // Activate the tab to the left, or the first tab if it was the first tab
-              const newActiveIndex = Math.max(0, tabIndex - 1);
-              this.activateTab(this.tabs[newActiveIndex].id);
-            } else {
-              this.activeTabId = null;
-            }
-          }
-          
-          // If no tabs left, remove the new tab button and show welcome screen
-          if (this.tabs.length === 0) {
-            if (this.newTabButton) {
-              this.newTabButton.remove();
-              this.newTabButton = null;
-            }
-            // Show the welcome screen when no tabs are left
-            document.getElementById('welcome-screen').style.display = 'flex';
-          }
-          
-          // Update scroll buttons
-          if (this.updateScrollButtonsCallback) {
-            setTimeout(this.updateScrollButtonsCallback, 100);
-          }
-        }
-      },
-      
-      updateTabTitle(tabId, url, title) {
+        // Find and activate the requested tab
         const tab = this.tabs.find(tab => tab.id === tabId);
         if (tab) {
-          const titleElement = tab.element.querySelector('.tab-title');
-          if (titleElement) {
-            if (title) {
-              titleElement.textContent = title;
-            } else if (url) {
-              // Extract a title from the URL as a fallback
-              try {
-                const urlObj = new URL(url);
-                titleElement.textContent = urlObj.hostname;
-              } catch (e) {
-                titleElement.textContent = url;
-              }
-            }
-          }
+          tab.element.classList.add('active');
+          tab.view.classList.add('active');
+          this.activeTabId = tabId;
         }
       },
       
-      updateTabFavicon(tabId, faviconUrl) {
-        const tab = this.tabs.find(tab => tab.id === tabId);
-        if (tab && faviconUrl) {
-          const faviconElement = tab.element.querySelector('.tab-favicon');
-          if (faviconElement) {
-            faviconElement.src = faviconUrl;
+      // Close a tab by its ID
+      closeTab(tabId) {
+        // Find the tab index
+        const tabIndex = this.tabs.findIndex(tab => tab.id === tabId);
+        if (tabIndex === -1) return;
+        
+        const tab = this.tabs[tabIndex];
+        
+        // Remove the tab and view elements from the DOM
+        tab.element.remove();
+        tab.view.remove();
+        
+        // If we're closing the active tab, activate another tab
+        if (this.activeTabId === tabId) {
+          // Try to activate the tab to the right, or to the left if there is none
+          const newActiveIndex = tabIndex < this.tabs.length - 1 ? tabIndex : tabIndex - 1;
+          
+          if (newActiveIndex >= 0) {
+            // If there are still tabs, activate one
+            this.activateTab(this.tabs[newActiveIndex].id);
+          } else {
+            // If there are no more tabs, show the welcome screen
+            this.activeTabId = null;
+            document.getElementById('welcome-screen').style.display = 'flex';
           }
+        }
+        
+        // Remove the tab from our array
+        this.tabs.splice(tabIndex, 1);
+        
+        // If we've removed the last tab, remove the new tab button
+        if (this.tabs.length === 0 && this.newTabButton) {
+          this.newTabButton.remove();
+          this.newTabButton = null;
+        }
+        
+        // Update scroll buttons visibility
+        if (this.updateScrollButtonsCallback) {
+          this.updateScrollButtonsCallback();
+        }
+      },
+      
+      // Scroll the tabs container to make a tab visible
+      scrollToTab(tabElement) {
+        const tabsWrapper = document.querySelector('.tabs-wrapper');
+        const tabsElement = this.tabsContainer;
+        
+        // Calculate positions
+        const tabsWrapperWidth = tabsWrapper.offsetWidth;
+        const tabsScrollWidth = tabsElement.scrollWidth;
+        const currentPosition = parseInt(tabsElement.style.left || '0', 10);
+        const tabLeft = tabElement.offsetLeft;
+        const tabWidth = tabElement.offsetWidth;
+        const tabRight = tabLeft + tabWidth;
+        
+        // Check if the tab is outside the visible area
+        if (tabLeft < -currentPosition) {
+          // Tab is to the left of the visible area
+          tabsElement.style.left = `${-tabLeft}px`;
+        } else if (tabRight > tabsWrapperWidth - currentPosition) {
+          // Tab is to the right of the visible area
+          const newPosition = Math.max(-(tabsScrollWidth - tabsWrapperWidth), -(tabLeft - (tabsWrapperWidth - tabWidth)));
+          tabsElement.style.left = `${newPosition}px`;
+        }
+        
+        // Update scroll buttons visibility
+        if (this.updateScrollButtonsCallback) {
+          this.updateScrollButtonsCallback();
         }
       }
     };
-    
-    // Initialize the tab manager when the DOM is ready
+
+    // Set up tooltip functionality
+    function setupTooltips() {
+      const tooltips = document.querySelectorAll('.tooltip');
+      
+      tooltips.forEach(tooltip => {
+        // Show tooltip on mouseover
+        tooltip.addEventListener('mouseover', () => {
+          tooltip.classList.add('show-tooltip');
+        });
+        
+        // Hide tooltip on mouseout
+        tooltip.addEventListener('mouseout', () => {
+          tooltip.classList.remove('show-tooltip');
+        });
+      });
+    }
+
+    // Initialize the application when the DOM is loaded
     document.addEventListener('DOMContentLoaded', () => {
+      // Initialize the tab manager
       tabManager.init();
       
-      // Set up tooltips with delay
-      const tooltipElements = document.querySelectorAll('.tooltip');
-      tooltipElements.forEach(element => {
-        let tooltipTimeout;
-        
-        element.addEventListener('mouseenter', () => {
-          tooltipTimeout = setTimeout(() => {
-            element.classList.add('show-tooltip');
-          }, 250);
-        });
-        
-        element.addEventListener('mouseleave', () => {
-          clearTimeout(tooltipTimeout);
-          element.classList.remove('show-tooltip');
-        });
+      // Set up tooltips
+      setupTooltips();
+      
+      // Listen for messages from the main process
+      const { ipcRenderer } = require('electron');
+      
+      // Get the initial Always on Top state
+      ipcRenderer.invoke('get-always-on-top').then((isAlwaysOnTop) => {
+        const aotButton = document.getElementById('aot-button');
+        if (isAlwaysOnTop) {
+          aotButton.classList.add('active');
+        } else {
+          aotButton.classList.remove('active');
+        }
       });
     });
   </script>
