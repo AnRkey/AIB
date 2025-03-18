@@ -1,6 +1,15 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 
+// Set document title with version number
+document.addEventListener('DOMContentLoaded', () => {
+  // Get version from window.api if available (set in preload.js)
+  if (window.api && window.api.getVersion) {
+    const version = window.api.getVersion();
+    document.title = `AI Browser v${version}`;
+  }
+});
+
 // Handle errors in the renderer process
 window.addEventListener('error', (event) => {
   console.error('Uncaught error:', event.error);

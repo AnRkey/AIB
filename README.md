@@ -1,4 +1,4 @@
-# AIB - AI Browser v.1.0.0-b
+# AIB - AI Browser v1.0.0-b2
 
 ![Logo](src/AIB_logo.png)
 
@@ -20,11 +20,11 @@ AIB is a desktop application that provides a convenient way to access various AI
 - Ability to launch multiple instances of the application
 
 ## Download
-[Download AIB_Installer-v1.0.0-b.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b/AIB_Installer-v1.0.0-b.exe)
+[Download AIB_Installer-v1.0.0-b2.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Installer-v1.0.0-b2.exe)
 
-[Download AIB_Portable-v1.0.0-b.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b/AIB_Portable-v1.0.0-b.exe)
+[Download AIB_Portable-v1.0.0-b2.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Portable-v1.0.0-b2.exe)
 
-[Download AIB_Portable-v1.0.0-b.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b/AIB_Portable-v1.0.0-b.zip)
+[Download AIB_Portable-v1.0.0-b2.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Portable-v1.0.0-b2.zip)
 
 ## Prerequisites for use
 - Windows 10 or 11

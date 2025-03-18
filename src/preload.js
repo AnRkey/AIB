@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const packageInfo = require('../package.json');
 
 // Since we're using nodeIntegration: true and contextIsolation: false,
 // we don't need to use contextBridge. Instead, we can expose our API
@@ -23,6 +24,6 @@ window.api = {
   },
   // Get the version of the application
   getVersion: () => {
-    return process.env.npm_package_version;
+    return packageInfo.version;
   }
 }; 

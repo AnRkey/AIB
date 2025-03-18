@@ -1,5 +1,8 @@
 const { app, BrowserWindow, shell, Menu, ipcMain, session } = require('electron');
 const path = require('path');
+// Get package version for the window title
+const packageInfo = require('../package.json');
+const appVersion = packageInfo.version;
 
 // Log all command line arguments for debugging
 console.log('Command line arguments:');
@@ -75,7 +78,7 @@ function createWindow() {
       devTools: true // Always enable DevTools capability
     },
     icon: path.join(__dirname, 'AIB.ico'),
-    title: 'AIB'
+    title: `AI Browser v${appVersion}`
   });
 
   // Set up DevTools keyboard shortcuts if enabled via command line
