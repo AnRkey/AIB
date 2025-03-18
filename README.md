@@ -18,6 +18,7 @@ AIB is a desktop application that provides a convenient way to access various AI
 - Tab-based browsing with the ability to open multiple AI services at once
 - "Always on top" mode to keep the application visible while working in other windows
 - Ability to launch multiple instances of the application
+- Chrome 134 user-agent for optimal compatibility with AI services
 
 ## Download
 [Download AIB_Installer-v1.0.0-b2.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Installer-v1.0.0-b2.exe)

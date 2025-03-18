@@ -76,6 +76,8 @@ The "+Window" button opens a new instance of AIB, allowing you to organize your 
 
 4. **Tab Management**: Close tabs you're no longer using to keep the interface clean and reduce resource usage.
 
+5. **Browser Compatibility**: AIB identifies as Chrome 134 to all websites, ensuring optimal compatibility with AI services and avoiding "unsupported browser" messages.
+
 ## Troubleshooting
 
 ### Common Issues

@@ -61,6 +61,15 @@ if (!gotTheLock) {
       // On macOS, re-create a window when the dock icon is clicked and no windows are open
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
+    
+    // Set the same User-Agent for all sessions
+    // This ensures consistent browser identification and optimal compatibility with AI services
+    // The Chrome 134 user-agent is chosen to provide maximum compatibility with modern websites
+    // Modifying this may impact site functionality if certain services check for specific browsers
+    session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+      details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36';
+      callback({ requestHeaders: details.requestHeaders });
+    });
   });
 }
 

@@ -92,6 +92,14 @@ Handles user interface interactions:
 - Event listeners for UI components
 - Dynamic content updates
 
+### Browser Identity and User-Agent
+
+The application uses a consistent user-agent string across all web requests:
+- Set at the session level in `main.js` using `webRequest.onBeforeSendHeaders`
+- Set on each webview element via the `useragent` attribute 
+- Current user-agent: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36`
+- This ensures consistent site compatibility and identification
+
 ### Custom Tabs Implementation (`custom-tabs.js`)
 
 Custom implementation for browser-like tabs:

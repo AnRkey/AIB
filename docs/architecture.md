@@ -65,6 +65,7 @@ AIB uses Electron's main process and renderer process architecture:
   - Created dynamically when opening new tabs
   - Configured with appropriate permissions
   - Event listeners for page navigation
+  - Standardized Chrome 134 user-agent string for consistent site compatibility
 
 - **Webview Communication**
   - Event handling for page-title-updated and page-favicon-updated
@@ -138,6 +139,11 @@ The code is organized to separate:
 3. **Permission Handling**
    - Explicit permission controls for features like microphone access
    - Controlled through the webview permission-request event
+
+4. **Browser Fingerprinting**
+   - Consistent user-agent string across the application
+   - Helps avoid detection as a non-standard browser
+   - Set to Chrome 134 for optimal compatibility with AI services
 
 ## Performance Considerations
 
