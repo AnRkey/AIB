@@ -856,6 +856,18 @@ Description: A desktop application that provides a convenient way to access vari
       // Listen for messages from the main process
       const { ipcRenderer } = require('electron');
       
+      // Handle reload-active-tab message from context menu
+      ipcRenderer.on('reload-active-tab', () => {
+        // Find the active tab and reload its webview (same code as refresh button)
+        const activeTab = tabManager.tabs.find(tab => tab.id === tabManager.activeTabId);
+        if (activeTab && activeTab.webview) {
+          console.log('Reloading active tab from context menu:', activeTab.id);
+          activeTab.webview.reload();
+        } else {
+          console.log('No active tab to reload from context menu');
+        }
+      });
+      
       // Get the initial Always on Top state
       ipcRenderer.invoke('get-always-on-top').then((isAlwaysOnTop) => {
         const aotButton = document.getElementById('aot-button');

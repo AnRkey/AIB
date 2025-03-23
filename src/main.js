@@ -16,6 +16,44 @@ const shouldEnableDevTools = process.argv.some(arg =>
 );
 console.log('DevTools enabled:', shouldEnableDevTools);
 
+// Enable context menu for all webContents (including webviews)
+app.on('web-contents-created', (event, contents) => {
+  contents.on('context-menu', (event, params) => {
+    // Get the associated BrowserWindow 
+    const win = BrowserWindow.fromWebContents(contents);
+    
+    const menu = Menu.buildFromTemplate([
+      // Add spelling suggestions if available (at the top)
+      ...(params.dictionarySuggestions?.length > 0
+        ? [
+            ...params.dictionarySuggestions.map(suggestion => ({
+              label: suggestion,
+              click: () => contents.replaceMisspelling(suggestion)
+            })),
+            { type: 'separator' }
+          ]
+        : []),
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      { type: 'separator' },
+      { role: 'selectAll' },
+      { type: 'separator' },
+      { 
+        label: 'Reload',
+        click: () => {
+          // Send a message to the renderer to reload the active tab
+          if (win) {
+            win.webContents.send('reload-active-tab');
+          }
+        }
+      },
+      ...(shouldEnableDevTools ? [{ role: 'toggleDevTools' }] : [])
+    ]);
+    menu.popup();
+  });
+});
+
 // Keep a global reference of the window objects to prevent garbage collection
 let mainWindow;
 const windows = [];
@@ -70,6 +108,10 @@ if (!gotTheLock) {
       details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36';
       callback({ requestHeaders: details.requestHeaders });
     });
+
+    // Enable spellchecking
+    session.defaultSession.setSpellCheckerLanguages(['en-US']);
+    session.defaultSession.setSpellCheckerEnabled(true);
   });
 }
 
@@ -146,7 +188,7 @@ function createWindow() {
 
   // Set up URL handling for this window
   setupUrlHandling(newWindow);
-  
+
   return newWindow;
 }
 
