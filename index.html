@@ -430,6 +430,68 @@ Description: A desktop application that provides a convenient way to access vari
       right: 0; 
       left: auto;
     }
+
+    /* Menu dropdown styling */
+    .menu-container {
+      position: relative;
+      margin-right: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 3px;
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      box-shadow: 0 1px 2px var(--button-shadow);
+      height: 26px;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-button:hover {
+      background-color: var(--button-hover-bg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      min-width: 150px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 12px;
+      border: none;
+      background: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .dropdown-menu button:hover {
+      background-color: var(--button-hover-bg);
+    }
   </style>
 </head>
 <body>
@@ -437,6 +499,16 @@ Description: A desktop application that provides a convenient way to access vari
   <div class="app-container">
     <!-- Toolbar containing AI service buttons and controls -->
     <div class="toolbar">
+      <!-- Menu dropdown -->
+      <div class="menu-container" id="menu-container">
+        <button class="menu-button tooltip" data-tooltip="Application Menu">☰</button>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <button data-url="settings">Settings</button>
+          <button data-url="support">Support</button>
+          <button data-url="help">Help</button>
+          <button data-url="about">About</button>
+        </div>
+      </div>
       <!-- Left side of toolbar with AI service buttons -->
       <div class="left-controls">
         <button class="toolbar-button" data-url="https://chat.openai.com">ChatGPT</button>
@@ -613,15 +685,28 @@ Description: A desktop application that provides a convenient way to access vari
         tabElement.className = 'tab';
         tabElement.dataset.tabId = tabId;
         
+        // Determine if this is a menu tab or service tab
+        const isMenuTab = this.isMenuTab(url);
+        tabElement.dataset.tabType = isMenuTab ? 'menu' : 'service';
+        
         // Favicon element (empty initially, will be updated once the webview loads)
         const favicon = document.createElement('img');
         favicon.className = 'tab-favicon';
         favicon.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Transparent placeholder
         
-        // Title element (initially set to the domain name)
+        // Title element (initially set to the domain name or local page name)
         const title = document.createElement('div');
         title.className = 'tab-title';
-        title.textContent = new URL(url).hostname;
+        
+        // Check if it's a local file or external URL
+        if (url.startsWith('file:') || url.includes(`${window.location.hostname}`) || !url.match(/^https?:\/\//)) {
+          // For local files, extract the page name from the URL
+          const pageName = url.split('/').pop().split('.')[0];
+          title.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1); // Capitalize first letter
+        } else {
+          // For external URLs, use the hostname
+          title.textContent = new URL(url).hostname;
+        }
         
         // Close button
         const closeButton = document.createElement('button');
@@ -674,7 +759,8 @@ Description: A desktop application that provides a convenient way to access vari
           url: url,
           element: tabElement,
           view: viewElement,
-          webview: webview
+          webview: webview,
+          isMenuTab: isMenuTab
         });
         
         // Set up webview event listeners
@@ -690,6 +776,30 @@ Description: A desktop application that provides a convenient way to access vari
         
         // Ensure the new tab is visible by scrolling if needed
         this.scrollToTab(tabElement);
+        
+        // Update new tab button visibility based on latest tab
+        this.updateNewTabButtonVisibility();
+      },
+      
+      // Check if a URL is for a menu tab (Settings, Support, Help, About)
+      isMenuTab(url) {
+        const menuPages = ['settings.html', 'support.html', 'help.html', 'about.html'];
+        return menuPages.some(page => url.endsWith(page));
+      },
+      
+      // Update the visibility of the new tab button based on the rightmost tab
+      updateNewTabButtonVisibility() {
+        if (!this.newTabButton || this.tabs.length === 0) return;
+        
+        // Get the rightmost tab (the last one in the array)
+        const rightmostTab = this.tabs[this.tabs.length - 1];
+        
+        // Show the new tab button only if the rightmost tab is a service tab
+        if (rightmostTab.isMenuTab) {
+          this.newTabButton.style.display = 'none';
+        } else {
+          this.newTabButton.style.display = 'flex';
+        }
       },
       
       // Create the "+" button for adding new tabs
@@ -790,6 +900,9 @@ Description: A desktop application that provides a convenient way to access vari
         if (this.tabs.length === 0 && this.newTabButton) {
           this.newTabButton.remove();
           this.newTabButton = null;
+        } else {
+          // Otherwise, update the new tab button visibility
+          this.updateNewTabButtonVisibility();
         }
         
         // Update scroll buttons visibility
@@ -853,6 +966,9 @@ Description: A desktop application that provides a convenient way to access vari
       // Set up tooltips
       setupTooltips();
       
+      // Set up menu dropdown
+      setupMenuDropdown();
+      
       // Listen for messages from the main process
       const { ipcRenderer } = require('electron');
       
@@ -878,6 +994,54 @@ Description: A desktop application that provides a convenient way to access vari
         }
       });
     });
+
+    // Set up menu dropdown functionality
+    function setupMenuDropdown() {
+      const menuButton = document.querySelector('.menu-button');
+      const dropdownMenu = document.getElementById('dropdown-menu');
+      
+      // Toggle dropdown when clicking the menu button
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', () => {
+        dropdownMenu.classList.remove('show');
+      });
+      
+      // Prevent dropdown from closing when clicking inside it
+      dropdownMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      
+      // Set up menu item functionality
+      const menuItems = dropdownMenu.querySelectorAll('button');
+      menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const url = item.getAttribute('data-url');
+          if (url) {
+            // Create a new tab with the selected menu item
+            const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+            const tabUrl = `${baseUrl}${url}.html`;
+            
+            // Check if there's already a tab with this URL
+            const existingTab = tabManager.tabs.find(tab => tab.url === tabUrl);
+            if (existingTab) {
+              // If a tab with this URL exists, activate it
+              tabManager.activateTab(existingTab.id);
+            } else {
+              // Otherwise, create a new tab
+              tabManager.createTab(tabUrl);
+            }
+            
+            // Close the dropdown
+            dropdownMenu.classList.remove('show');
+          }
+        });
+      });
+    }
   </script>
 </body>
 </html> 

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
+  <title>Help</title>
+  <style>
+    :root {
+      /* Light mode colors (default) */
+      --bg-color: #fff;
+      --text-color: #333;
+      --section-bg: #f5f5f5;
+      --border-color: #ddd;
+      --heading-color: #007bff;
+      --link-color: #007bff;
+      --link-hover-color: #0056b3;
+      --card-bg: #f9f9f9;
+      --code-bg: #f1f1f1;
+    }
+
+    /* Dark mode theme */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #222;
+        --text-color: #eee;
+        --section-bg: #333;
+        --border-color: #555;
+        --heading-color: #4da6ff;
+        --link-color: #6bb0ff;
+        --link-hover-color: #a8d1ff;
+        --card-bg: #2a2a2a;
+        --code-bg: #2d2d2d;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .help-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      color: var(--heading-color);
+      margin-top: 30px;
+    }
+
+    h3 {
+      color: var(--heading-color);
+    }
+
+    a {
+      color: var(--link-color);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--link-hover-color);
+      text-decoration: underline;
+    }
+
+    .help-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .help-section h3 {
+      margin-top: 0;
+    }
+
+    .shortcut-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    .shortcut-table th,
+    .shortcut-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .shortcut-table th {
+      background-color: var(--section-bg);
+      font-weight: bold;
+    }
+
+    .shortcut-key {
+      background-color: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      border: 1px solid var(--border-color);
+    }
+
+    .step-by-step {
+      margin-left: 20px;
+    }
+
+    .step-by-step li {
+      margin-bottom: 10px;
+    }
+
+    img {
+      max-width: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="help-container">
+    <h1>Help Center</h1>
+
+    <div class="help-section">
+      <h3>Getting Started with AI Browser</h3>
+      <p>AI Browser allows you to access multiple AI services in a single application with a tabbed interface.</p>
+    </div>
+
+    <h2>Basic Navigation</h2>
+
+    <div class="help-section">
+      <h3>Opening AI Services</h3>
+      <p>Click on any of the AI service buttons in the toolbar to open that service in a new tab:</p>
+      <ol class="step-by-step">
+        <li>Click <strong>ChatGPT</strong>, <strong>Claude</strong>, <strong>Gemini</strong>, or <strong>Grok</strong> button in the toolbar.</li>
+        <li>The service will open in a new tab.</li>
+        <li>You can have multiple services open simultaneously in different tabs.</li>
+      </ol>
+    </div>
+
+    <div class="help-section">
+      <h3>Working with Tabs</h3>
+      <p>Manage your open tabs to multitask across different AI services:</p>
+      <ol class="step-by-step">
+        <li>Click on a tab to switch to it.</li>
+        <li>Click the × icon on a tab to close it.</li>
+        <li>Use the scroll buttons (< and >) to navigate when you have many tabs open.</li>
+      </ol>
+    </div>
+
+    <h2>Keyboard Shortcuts</h2>
+
+    <div class="help-section">
+      <p>AI Browser supports several keyboard shortcuts for efficient navigation:</p>
+      
+      <table class="shortcut-table">
+        <tr>
+          <th>Function</th>
+          <th>Shortcut</th>
+        </tr>
+        <tr>
+          <td>New Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">T</span></td>
+        </tr>
+        <tr>
+          <td>Close Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">W</span></td>
+        </tr>
+        <tr>
+          <td>Refresh</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">R</span> or <span class="shortcut-key">F5</span></td>
+        </tr>
+        <tr>
+          <td>Next Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">Tab</span></td>
+        </tr>
+        <tr>
+          <td>Previous Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">Shift</span> + <span class="shortcut-key">Tab</span></td>
+        </tr>
+        <tr>
+          <td>Open DevTools</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">Shift</span> + <span class="shortcut-key">I</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <h2>Advanced Features</h2>
+
+    <div class="help-section">
+      <h3>Always on Top</h3>
+      <p>Keep the AI Browser window visible even when using other applications:</p>
+      <ol class="step-by-step">
+        <li>Click the <strong>AOT</strong> button in the toolbar.</li>
+        <li>The button will highlight when Always on Top is active.</li>
+        <li>Click again to disable Always on Top mode.</li>
+      </ol>
+    </div>
+
+    <div class="help-section">
+      <h3>Opening a New Window</h3>
+      <p>Create a new instance of AI Browser:</p>
+      <ol class="step-by-step">
+        <li>Click the <strong>+Window</strong> button in the toolbar.</li>
+        <li>A new AI Browser window will open.</li>
+        <li>Each window operates independently with its own tabs and settings.</li>
+      </ol>
+    </div>
+
+    <h2>Troubleshooting</h2>
+
+    <div class="help-section">
+      <h3>Common Issues</h3>
+      <p>If you encounter problems with AI Browser:</p>
+      <ul>
+        <li><strong>Service not loading:</strong> Click the refresh button or try reopening the tab.</li>
+        <li><strong>Login issues:</strong> Some services may require you to log in again after periods of inactivity.</li>
+        <li><strong>Performance problems:</strong> Close unused tabs to free up memory.</li>
+      </ul>
+      <p>If problems persist, visit the <a href="support.html">Support</a> page for more assistance.</p>
+    </div>
+  </div>
+</body>
+</html> 
