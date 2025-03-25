@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
+  <title>AIB Settings</title>
+  <style>
+    /* Inherit variables from main app */
+    :root {
+      /* These will be overridden by the parent styles.css */
+      --bg-color: #fff;
+      --text-color: #333;
+      --border-color: #ddd;
+      --button-bg: #fff;
+      --button-hover-bg: #e9e9e9;
+      --button-active-bg: #007bff;
+      --button-active-text: white;
+      --input-bg: #fff;
+      --description-color: #666;
+      --modal-overlay: rgba(0,0,0,0.5);
+      --cancel-button-bg: #6c757d;
+    }
+
+    /* Dark mode theme applied via media query when system uses dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark mode colors */
+        --bg-color: #222;
+        --text-color: #eee;
+        --border-color: #555;
+        --button-bg: #444;
+        --button-hover-bg: #555;
+        --button-active-bg: #0066cc;
+        --button-active-text: white;
+        --input-bg: #333;
+        --description-color: #aaa;
+        --modal-overlay: rgba(0,0,0,0.7);
+        --cancel-button-bg: #555;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .settings-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .settings-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .settings-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+
+    .settings-tab {
+      padding: 10px 15px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      margin-right: 5px;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .settings-tab.active {
+      background-color: var(--button-active-bg);
+      color: var(--button-active-text);
+    }
+
+    .settings-section {
+      display: none;
+      padding: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+
+    .settings-section.active {
+      display: block;
+    }
+
+    .setting-group {
+      margin-bottom: 20px;
+    }
+
+    .setting-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .setting-description {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: var(--description-color);
+    }
+
+    .setting-control {
+      margin-bottom: 15px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    input[type="text"], input[type="password"], select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
+
+    .save-button {
+      background-color: var(--button-active-bg);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .danger-zone {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #dc3545;
+      border-radius: 4px;
+    }
+
+    .danger-zone h3 {
+      color: #dc3545;
+      margin-top: 0;
+    }
+
+    .danger-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--modal-overlay);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--bg-color);
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 400px;
+      width: 100%;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-title {
+      margin-top: 0;
+      color: #dc3545;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .modal-button {
+      padding: 8px 16px;
+      margin-left: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .modal-cancel {
+      background-color: var(--cancel-button-bg);
+      color: white;
+      border: none;
+    }
+
+    .modal-confirm {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-container">
+    <div class="settings-header">
+      <h1>AIB Settings</h1>
+    </div>
+
+    <div class="settings-tabs">
+      <div class="settings-tab active" data-tab="general">General</div>
+      <div class="settings-tab" data-tab="audio">Audio</div>
+      <div class="settings-tab" data-tab="privacy">Privacy</div>
+      <div class="settings-tab" data-tab="proxy">Proxy</div>
+    </div>
+
+    <div class="settings-section active" id="general-section">
+      <div class="setting-group">
+        <div class="setting-label">Application Behavior</div>
+        <div class="setting-control">
+          <label>
+            <input type="checkbox" id="aot-startup">
+            Always on top when application starts
+          </label>
+          <div class="setting-description">Keeps the application window on top of other windows when launched</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section" id="audio-section">
+      <div class="setting-group">
+        <div class="setting-label">Microphone</div>
+        <div class="setting-description">Select the default microphone for all AI services</div>
+        <div class="setting-control">
+          <select id="microphone-select">
+            <option value="">Loading microphones...</option>
+          </select>
+        </div>
+      </div>
+      <div class="setting-group">
+        <div class="setting-label">Audio Output</div>
+        <div class="setting-description">Select the default audio output device</div>
+        <div class="setting-control">
+          <select id="speaker-select">
+            <option value="">Loading speakers...</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section" id="privacy-section">
+      <div class="setting-group">
+        <div class="setting-label">Browser Data</div>
+        <div class="setting-description">Manage browsing history and data</div>
+        
+        <div class="danger-zone">
+          <h3>Danger Zone</h3>
+          <p>This action will clear all browsing data, including cookies and login sessions for all AI services.</p>
+          <button id="clear-data-button" class="danger-button">Clear All Browsing Data</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section" id="proxy-section">
+      <div class="setting-group">
+        <div class="setting-label">Proxy Configuration</div>
+        <div class="setting-description">Configure a proxy server for all connections</div>
+        <div class="setting-control">
+          <label>
+            <input type="checkbox" id="enable-proxy">
+            Enable proxy server
+          </label>
+        </div>
+        <div class="setting-control">
+          <label class="setting-label" for="proxy-address">Proxy Address</label>
+          <input type="text" id="proxy-address" placeholder="e.g. 127.0.0.1:8080">
+        </div>
+        <div class="setting-control">
+          <label class="setting-label" for="proxy-username">Username (if required)</label>
+          <input type="text" id="proxy-username" placeholder="Username">
+        </div>
+        <div class="setting-control">
+          <label class="setting-label" for="proxy-password">Password (if required)</label>
+          <input type="password" id="proxy-password" placeholder="Password">
+        </div>
+      </div>
+    </div>
+
+    <button id="save-settings" class="save-button">Save Settings</button>
+  </div>
+
+  <!-- Confirmation Modal for Clear Data -->
+  <div id="clear-data-modal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Confirm Action</h3>
+      <p>You are about to clear all browsing data. This will log you out of all services and cannot be undone.</p>
+      <p>Do you want to continue?</p>
+      <div class="modal-buttons">
+        <button id="modal-cancel" class="modal-button modal-cancel">Cancel</button>
+        <button id="modal-confirm" class="modal-button modal-confirm">Clear Data</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.settings-tab');
+    const sections = document.querySelectorAll('.settings-section');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetId = `${tab.dataset.tab}-section`;
+        
+        // Update active tab
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Show selected section
+        sections.forEach(section => {
+          section.classList.remove('active');
+          if (section.id === targetId) {
+            section.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // Modal functionality
+    const clearDataButton = document.getElementById('clear-data-button');
+    const clearDataModal = document.getElementById('clear-data-modal');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalConfirm = document.getElementById('modal-confirm');
+
+    clearDataButton.addEventListener('click', () => {
+      clearDataModal.classList.add('active');
+    });
+
+    modalCancel.addEventListener('click', () => {
+      clearDataModal.classList.remove('active');
+    });
+
+    modalConfirm.addEventListener('click', () => {
+      // Use IPC to communicate with main process to clear data
+      const { ipcRenderer } = require('electron');
+      ipcRenderer.invoke('clear-browsing-data').then(() => {
+        clearDataModal.classList.remove('active');
+        // Show success message
+        alert('All browsing data has been cleared successfully');
+      });
+    });
+
+    // Settings functionality
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { ipcRenderer } = require('electron');
+      
+      // Load saved settings
+      const settings = await ipcRenderer.invoke('get-settings');
+      
+      // Populate form with saved settings
+      document.getElementById('aot-startup').checked = settings.alwaysOnTop || false;
+      document.getElementById('enable-proxy').checked = settings.proxy?.enabled || false;
+      document.getElementById('proxy-address').value = settings.proxy?.address || '';
+      document.getElementById('proxy-username').value = settings.proxy?.username || '';
+      document.getElementById('proxy-password').value = settings.proxy?.password || '';
+      
+      // Get and populate audio devices
+      const audioDevices = await ipcRenderer.invoke('get-audio-devices');
+      
+      const microphoneSelect = document.getElementById('microphone-select');
+      const speakerSelect = document.getElementById('speaker-select');
+      
+      // Clear the default options
+      microphoneSelect.innerHTML = '';
+      speakerSelect.innerHTML = '';
+      
+      // Add microphones
+      if (audioDevices.microphones.length > 0) {
+        audioDevices.microphones.forEach(device => {
+          const option = document.createElement('option');
+          option.value = device.deviceId;
+          option.textContent = device.label || `Microphone ${device.deviceId.substring(0, 5)}`;
+          option.selected = device.deviceId === settings.selectedMicrophone;
+          microphoneSelect.appendChild(option);
+        });
+      } else {
+        microphoneSelect.innerHTML = '<option value="">No microphones found</option>';
+      }
+      
+      // Add speakers
+      if (audioDevices.speakers.length > 0) {
+        audioDevices.speakers.forEach(device => {
+          const option = document.createElement('option');
+          option.value = device.deviceId;
+          option.textContent = device.label || `Speaker ${device.deviceId.substring(0, 5)}`;
+          option.selected = device.deviceId === settings.selectedSpeaker;
+          speakerSelect.appendChild(option);
+        });
+      } else {
+        speakerSelect.innerHTML = '<option value="">No speakers found</option>';
+      }
+      
+      // Save settings
+      const saveButton = document.getElementById('save-settings');
+      saveButton.addEventListener('click', async () => {
+        const newSettings = {
+          alwaysOnTop: document.getElementById('aot-startup').checked,
+          selectedMicrophone: microphoneSelect.value,
+          selectedSpeaker: speakerSelect.value,
+          proxy: {
+            enabled: document.getElementById('enable-proxy').checked,
+            address: document.getElementById('proxy-address').value,
+            username: document.getElementById('proxy-username').value,
+            password: document.getElementById('proxy-password').value
+          }
+        };
+        
+        await ipcRenderer.invoke('save-settings', newSettings);
+        alert('Settings saved successfully!');
+      });
+    });
+  </script>
+</body>
+</html> 

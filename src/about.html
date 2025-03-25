@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
+  <title>About AIB</title>
+  <style>
+    /* Inherit variables from main app */
+    :root {
+      /* These will be overridden by the parent styles.css */
+      --bg-color: #fff;
+      --text-color: #333;
+      --border-color: #ddd;
+      --button-bg: #fff;
+      --button-hover-bg: #e9e9e9;
+      --button-active-bg: #007bff;
+      --button-active-text: white;
+      --version-info-bg: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Dark mode theme applied via media query when system uses dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark mode colors */
+        --bg-color: #222;
+        --text-color: #eee;
+        --border-color: #555;
+        --button-bg: #444;
+        --button-hover-bg: #555;
+        --button-active-bg: #0066cc;
+        --button-active-text: white;
+        --version-info-bg: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .about-container {
+      max-width: 800px;
+      margin: 0 auto;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .about-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .logo {
+      width: 120px;
+      height: auto;
+    }
+
+    .about-content {
+      margin-bottom: 30px;
+      flex-grow: 1;
+    }
+
+    .version-info {
+      margin-top: 20px;
+      background-color: var(--version-info-bg);
+      padding: 15px;
+      border-radius: 4px;
+    }
+
+    .version-info p {
+      margin: 5px 0;
+    }
+
+    .about-footer {
+      margin-top: 30px;
+      text-align: center;
+      padding-top: 15px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    a {
+      color: var(--button-active-bg);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="about-container">
+    <div class="about-header">
+      <h1>About AIB</h1>
+    </div>
+
+    <div class="logo-container">
+      <img src="AIB_logo.png" alt="AIB Logo" class="logo">
+    </div>
+
+    <div class="about-content">
+      <h2>AI Browser</h2>
+      <p>AIB is a desktop application that provides a convenient way to access various AI services in a tabbed browser interface. It offers a simple, clean interface optimized for AI interactions.</p>
+      
+      <p>The application is designed to make it easy to work with multiple AI services simultaneously, keeping them all in one organized window.</p>
+
+      <div class="version-info">
+        <p><strong>Version:</strong> <span id="app-version">1.0.0-b2</span></p>
+        <p><strong>Electron:</strong> <span id="electron-version">-</span></p>
+        <p><strong>Chrome:</strong> <span id="chrome-version">-</span></p>
+        <p><strong>Node.js:</strong> <span id="node-version">-</span></p>
+        <p><strong>V8:</strong> <span id="v8-version">-</span></p>
+      </div>
+    </div>
+
+    <div class="about-footer">
+      <p>Copyright © 2024 - <a href="https://github.com/AnRkey/AIB" target="_blank">View on GitHub</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Use IPC to get version information
+      const { ipcRenderer } = require('electron');
+      
+      // Get version information
+      ipcRenderer.invoke('get-version-info').then((versionInfo) => {
+        document.getElementById('app-version').textContent = versionInfo.app;
+        document.getElementById('electron-version').textContent = versionInfo.electron;
+        document.getElementById('chrome-version').textContent = versionInfo.chrome;
+        document.getElementById('node-version').textContent = versionInfo.node;
+        document.getElementById('v8-version').textContent = versionInfo.v8;
+      });
+    });
+  </script>
+</body>
+</html> 

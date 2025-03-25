@@ -1,8 +1,11 @@
-const { app, BrowserWindow, shell, Menu, ipcMain, session } = require('electron');
+const { app, BrowserWindow, shell, Menu, ipcMain, session, desktopCapturer } = require('electron');
 const path = require('path');
 // Get package version for the window title
 const packageInfo = require('../package.json');
 const appVersion = packageInfo.version;
+
+// Settings store will be initialized after import
+let settings;
 
 // Log all command line arguments for debugging
 console.log('Command line arguments:');
@@ -92,26 +95,54 @@ if (!gotTheLock) {
   });
 
   // Create window when Electron has finished initialization
-  app.whenReady().then(() => {
-    createWindow();
+  app.whenReady().then(async () => {
+    // Initialize electron-store using dynamic import
+    try {
+      const Store = (await import('electron-store')).default;
+      settings = new Store({
+        name: 'aib-settings',
+        defaults: {
+          alwaysOnTop: false,
+          selectedMicrophone: null,
+          selectedSpeaker: null,
+          proxy: {
+            enabled: false,
+            address: '',
+            username: '',
+            password: ''
+          }
+        }
+      });
+      
+      createWindow();
 
-    app.on('activate', () => {
-      // On macOS, re-create a window when the dock icon is clicked and no windows are open
-      if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    });
-    
-    // Set the same User-Agent for all sessions
-    // This ensures consistent browser identification and optimal compatibility with AI services
-    // The Chrome 134 user-agent is chosen to provide maximum compatibility with modern websites
-    // Modifying this may impact site functionality if certain services check for specific browsers
-    session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-      details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36';
-      callback({ requestHeaders: details.requestHeaders });
-    });
+      app.on('activate', () => {
+        // On macOS, re-create a window when the dock icon is clicked and no windows are open
+        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+      });
+      
+      // Set the same User-Agent for all sessions
+      // This ensures consistent browser identification and optimal compatibility with AI services
+      // The Chrome 134 user-agent is chosen to provide maximum compatibility with modern websites
+      // Modifying this may impact site functionality if certain services check for specific browsers
+      session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+        details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36';
+        callback({ requestHeaders: details.requestHeaders });
+      });
 
-    // Enable spellchecking
-    session.defaultSession.setSpellCheckerLanguages(['en-US']);
-    session.defaultSession.setSpellCheckerEnabled(true);
+      // Apply proxy settings if enabled
+      applyProxySettings();
+
+      // Enable spellchecking
+      session.defaultSession.setSpellCheckerLanguages(['en-US']);
+      session.defaultSession.setSpellCheckerEnabled(true);
+      
+      // Set up IPC handlers
+      setupIpcHandlers();
+    } catch (error) {
+      console.error('Failed to initialize electron-store:', error);
+      app.quit();
+    }
   });
 }
 
@@ -172,6 +203,11 @@ function createWindow() {
   // Add to windows array to keep track of all windows
   windows.push(newWindow);
 
+  // Check if always-on-top is enabled in settings
+  if (settings && settings.get('alwaysOnTop')) {
+    newWindow.setAlwaysOnTop(true);
+  }
+
   // Handle window closed event
   newWindow.on('closed', () => {
     // Remove from our windows array
@@ -190,6 +226,43 @@ function createWindow() {
   setupUrlHandling(newWindow);
 
   return newWindow;
+}
+
+// Apply proxy settings from the settings store
+function applyProxySettings() {
+  if (!settings) return;
+  
+  const proxySettings = settings.get('proxy');
+  
+  if (proxySettings && proxySettings.enabled && proxySettings.address) {
+    // Parse the address
+    const proxyUrl = proxySettings.address;
+    
+    // Set proxy configuration
+    if (proxySettings.username && proxySettings.password) {
+      // With authentication
+      session.defaultSession.setProxy({
+        proxyRules: proxyUrl,
+        proxyBypassRules: '<local>',
+        credentials: {
+          username: proxySettings.username,
+          password: proxySettings.password
+        }
+      });
+    } else {
+      // Without authentication
+      session.defaultSession.setProxy({
+        proxyRules: proxyUrl,
+        proxyBypassRules: '<local>'
+      });
+    }
+    
+    console.log('Proxy settings applied:', proxyUrl);
+  } else {
+    // Clear proxy settings
+    session.defaultSession.setProxy({});
+    console.log('No proxy settings applied');
+  }
 }
 
 // Quit when all windows are closed, except on macOS
@@ -286,7 +359,91 @@ function setupIpcHandlers() {
     const newWindow = createWindow();
     return true;
   });
-}
-
-// Set up IPC handlers
-setupIpcHandlers(); 
+  
+  // Handle getting settings
+  ipcMain.handle('get-settings', () => {
+    return settings ? settings.store : {};
+  });
+  
+  // Handle saving settings
+  ipcMain.handle('save-settings', (event, newSettings) => {
+    if (!settings) return false;
+    
+    // Save the new settings
+    settings.set(newSettings);
+    
+    // Apply always-on-top setting to all windows
+    if (newSettings.alwaysOnTop !== undefined) {
+      windows.forEach(window => {
+        window.setAlwaysOnTop(newSettings.alwaysOnTop);
+      });
+    }
+    
+    // Apply proxy settings
+    applyProxySettings();
+    
+    return true;
+  });
+  
+  // Handle clearing browsing data
+  ipcMain.handle('clear-browsing-data', async () => {
+    try {
+      // Clear all browsing data including cookies, storage, etc.
+      await session.defaultSession.clearStorageData({
+        storages: ['appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'shadercache', 'websql', 'serviceworkers'],
+        quotas: ['temporary', 'persistent', 'syncable']
+      });
+      
+      // Clear HTTP cache
+      await session.defaultSession.clearCache();
+      
+      console.log('All browsing data cleared');
+      return true;
+    } catch (error) {
+      console.error('Error clearing browsing data:', error);
+      return false;
+    }
+  });
+  
+  // Handle getting audio devices
+  ipcMain.handle('get-audio-devices', async () => {
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['audio'] });
+      
+      // Filter and format the devices
+      const microphones = [];
+      const speakers = [];
+      
+      sources.forEach(source => {
+        if (source.name.toLowerCase().includes('microphone') || 
+            source.name.toLowerCase().includes('mic')) {
+          microphones.push({
+            deviceId: source.id,
+            label: source.name
+          });
+        } else {
+          speakers.push({
+            deviceId: source.id,
+            label: source.name
+          });
+        }
+      });
+      
+      return { microphones, speakers };
+    } catch (error) {
+      console.error('Error getting audio devices:', error);
+      return { microphones: [], speakers: [] };
+    }
+  });
+  
+  // Handle getting version information
+  ipcMain.handle('get-version-info', () => {
+    return {
+      app: app.getVersion(),
+      electron: process.versions.electron,
+      chrome: process.versions.chrome,
+      node: process.versions.node,
+      v8: process.versions.v8
+    };
+  });
+} 
