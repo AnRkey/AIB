@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
+  <title>About</title>
+  <style>
+    :root {
+      /* Light mode colors (default) */
+      --bg-color: #fff;
+      --text-color: #333;
+      --section-bg: #f5f5f5;
+      --border-color: #ddd;
+      --heading-color: #007bff;
+      --highlight-color: #0056b3;
+      --card-bg: #f9f9f9;
+    }
+
+    /* Dark mode theme */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #222;
+        --text-color: #eee;
+        --section-bg: #333;
+        --border-color: #555;
+        --heading-color: #4da6ff;
+        --highlight-color: #6bb0ff;
+        --card-bg: #2a2a2a;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      text-align: center;
+    }
+
+    .about-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .app-title {
+      font-size: 48px;
+      font-weight: bold;
+      color: var(--heading-color);
+      margin-bottom: 0;
+    }
+
+    .app-version {
+      font-size: 18px;
+      color: var(--text-color);
+      margin-top: 5px;
+    }
+
+    .about-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: var(--heading-color);
+    }
+
+    .about-section h2 {
+      margin-top: 0;
+    }
+
+    .feature-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .feature-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-icon {
+      margin-right: 10px;
+      color: var(--highlight-color);
+      font-weight: bold;
+    }
+
+    .dev-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .dev-info strong {
+      width: 100px;
+      display: inline-block;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tech-badge {
+      background-color: var(--section-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 15px;
+      padding: 5px 12px;
+      font-size: 14px;
+    }
+
+    .copyright {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="about-container">
+    <div class="logo-container">
+      <div class="app-title">AIB</div>
+      <div class="app-version">Version 1.0.0-b2</div>
+    </div>
+
+    <div class="about-section">
+      <h2>About AI Browser</h2>
+      <p>AI Browser (AIB) is a desktop application designed to provide convenient access to multiple AI services in a single, tabbed interface. It allows you to seamlessly switch between different AI assistants without juggling multiple browser windows.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>Key Features</h2>
+      <ul class="feature-list">
+        <li><span class="feature-icon">✓</span> Access multiple AI services in a unified interface</li>
+        <li><span class="feature-icon">✓</span> Tab-based navigation for efficient multitasking</li>
+        <li><span class="feature-icon">✓</span> "Always on Top" mode for convenient reference while working</li>
+        <li><span class="feature-icon">✓</span> Multiple window support</li>
+        <li><span class="feature-icon">✓</span> Dark mode support</li>
+        <li><span class="feature-icon">✓</span> Native desktop application experience</li>
+      </ul>
+    </div>
+
+    <div class="about-section">
+      <h2>Development</h2>
+      <div class="dev-info">
+        <strong>Developer:</strong> AnRkey
+      </div>
+      <div class="dev-info">
+        <strong>Contact:</strong> anrkey@gmail.com
+      </div>
+      
+      <h3>Technologies</h3>
+      <div class="tech-stack">
+        <span class="tech-badge">Electron</span>
+        <span class="tech-badge">JavaScript</span>
+        <span class="tech-badge">HTML</span>
+        <span class="tech-badge">CSS</span>
+        <span class="tech-badge">Node.js</span>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h2>Supported AI Services</h2>
+      <ul class="feature-list">
+        <li><span class="feature-icon">→</span> <strong>ChatGPT</strong> - OpenAI's conversational AI</li>
+        <li><span class="feature-icon">→</span> <strong>Claude</strong> - Anthropic's helpful AI assistant</li>
+        <li><span class="feature-icon">→</span> <strong>Gemini</strong> - Google's versatile AI model</li>
+        <li><span class="feature-icon">→</span> <strong>Grok</strong> - xAI's conversational assistant</li>
+      </ul>
+    </div>
+
+    <div class="copyright">
+      Copyright © 2024 AIB Project<br>
+      Licensed under GPL-2.0
+    </div>
+  </div>
+</body>
+</html> 

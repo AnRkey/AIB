@@ -39,9 +39,6 @@ Description: A desktop application that provides a convenient way to access vari
       --scroll-button-hover: rgba(230, 230, 230, 0.9);
       --tooltip-bg: rgba(0, 0, 0, 0.8);
       --tooltip-text: white;
-      --dropdown-bg: #fff;
-      --dropdown-hover-bg: #f5f5f5;
-      --dropdown-shadow: rgba(0, 0, 0, 0.15);
     }
 
     /* Dark mode theme applied via media query when system uses dark mode */
@@ -67,9 +64,6 @@ Description: A desktop application that provides a convenient way to access vari
         --scroll-button-hover: rgba(68, 68, 68, 0.9);
         --tooltip-bg: rgba(0, 0, 0, 0.8);
         --tooltip-text: white;
-        --dropdown-bg: #333;
-        --dropdown-hover-bg: #444;
-        --dropdown-shadow: rgba(0, 0, 0, 0.3);
       }
     }
 
@@ -107,58 +101,6 @@ Description: A desktop application that provides a convenient way to access vari
       align-items: center;
       padding-right: 5px;
       border-right: 1px solid var(--border-color);
-    }
-
-    /* Menu button styling */
-    .menu-button {
-      padding: 4px 8px;
-      margin: 0 5px 0 2px;
-      border: none;
-      border-radius: 3px;
-      background-color: var(--button-bg);
-      color: var(--text-color);
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.2s;
-      text-align: center;
-      height: 26px;
-      box-shadow: 0 1px 2px var(--button-shadow);
-    }
-
-    /* Menu button hover state */
-    .menu-button:hover {
-      background-color: var(--button-hover-bg);
-    }
-
-    /* Dropdown menu container */
-    .menu-dropdown {
-      position: absolute;
-      top: 38px;
-      left: 5px;
-      min-width: 150px;
-      background-color: var(--dropdown-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      box-shadow: 0 2px 10px var(--dropdown-shadow);
-      display: none;
-      z-index: 1000;
-    }
-
-    /* Show the dropdown menu */
-    .menu-dropdown.active {
-      display: block;
-    }
-
-    /* Dropdown menu items */
-    .menu-item {
-      padding: 8px 15px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    /* Dropdown menu item hover state */
-    .menu-item:hover {
-      background-color: var(--dropdown-hover-bg);
     }
 
     /* Styling for toolbar buttons (AI service buttons) */
@@ -488,6 +430,68 @@ Description: A desktop application that provides a convenient way to access vari
       right: 0; 
       left: auto;
     }
+
+    /* Menu dropdown styling */
+    .menu-container {
+      position: relative;
+      margin-right: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 3px;
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      box-shadow: 0 1px 2px var(--button-shadow);
+      height: 26px;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-button:hover {
+      background-color: var(--button-hover-bg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      min-width: 150px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 12px;
+      border: none;
+      background: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .dropdown-menu button:hover {
+      background-color: var(--button-hover-bg);
+    }
   </style>
 </head>
 <body>
@@ -495,15 +499,18 @@ Description: A desktop application that provides a convenient way to access vari
   <div class="app-container">
     <!-- Toolbar containing AI service buttons and controls -->
     <div class="toolbar">
+      <!-- Menu dropdown -->
+      <div class="menu-container" id="menu-container">
+        <button class="menu-button tooltip" data-tooltip="Application Menu">☰</button>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <button data-url="settings">Settings</button>
+          <button data-url="support">Support</button>
+          <button data-url="help">Help</button>
+          <button data-url="about">About</button>
+        </div>
+      </div>
       <!-- Left side of toolbar with AI service buttons -->
       <div class="left-controls">
-        <button class="menu-button" id="menu-button">☰</button>
-        <div class="menu-dropdown" id="menu-dropdown">
-          <div class="menu-item" data-page="settings">Settings</div>
-          <div class="menu-item" data-page="help">Help</div>
-          <div class="menu-item" data-page="about">About</div>
-          <div class="menu-item" data-page="contribute">Contribute</div>
-        </div>
         <button class="toolbar-button" data-url="https://chat.openai.com">ChatGPT</button>
         <button class="toolbar-button" data-url="https://claude.ai">Claude</button>
         <button class="toolbar-button" data-url="https://gemini.google.com">Gemini</button>
@@ -547,7 +554,6 @@ Description: A desktop application that provides a convenient way to access vari
       newTabButton: null, // Button to create new tabs
       scrollAmount: 200, // Amount to scroll tabs in pixels
       lastOpenedUrl: 'https://grok.com', // Default URL for new tabs
-      systemPages: ['settings', 'help', 'about', 'contribute'], // List of system pages
       
       // Initialize the tab manager
       init() {
@@ -567,37 +573,6 @@ Description: A desktop application that provides a convenient way to access vari
               this.lastOpenedUrl = url;
               // Always create a new tab when clicking a service button
               this.createTab(url);
-            }
-          });
-        });
-        
-        // Set up menu button and dropdown
-        const menuButton = document.getElementById('menu-button');
-        const menuDropdown = document.getElementById('menu-dropdown');
-        
-        // Toggle menu dropdown
-        menuButton.addEventListener('click', () => {
-          menuDropdown.classList.toggle('active');
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', (event) => {
-          if (!event.target.closest('#menu-button') && !event.target.closest('#menu-dropdown')) {
-            menuDropdown.classList.remove('active');
-          }
-        });
-        
-        // Handle menu item clicks
-        const menuItems = document.querySelectorAll('.menu-item');
-        menuItems.forEach(item => {
-          item.addEventListener('click', () => {
-            const page = item.getAttribute('data-page');
-            if (page) {
-              // Close the dropdown
-              menuDropdown.classList.remove('active');
-              
-              // Create a new tab for the system page
-              this.createSystemTab(page);
             }
           });
         });
@@ -640,14 +615,6 @@ Description: A desktop application that provides a convenient way to access vari
             activeTab.webview.reload();
           } else {
             console.log('No active tab to reload');
-          }
-        });
-        
-        // Check if Always on Top is enabled
-        const { ipcRenderer } = require('electron');
-        ipcRenderer.invoke('get-always-on-top').then((isAlwaysOnTop) => {
-          if (isAlwaysOnTop) {
-            aotButton.classList.add('active');
           }
         });
         
@@ -718,15 +685,28 @@ Description: A desktop application that provides a convenient way to access vari
         tabElement.className = 'tab';
         tabElement.dataset.tabId = tabId;
         
+        // Determine if this is a menu tab or service tab
+        const isMenuTab = this.isMenuTab(url);
+        tabElement.dataset.tabType = isMenuTab ? 'menu' : 'service';
+        
         // Favicon element (empty initially, will be updated once the webview loads)
         const favicon = document.createElement('img');
         favicon.className = 'tab-favicon';
         favicon.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Transparent placeholder
         
-        // Title element (initially set to the domain name)
+        // Title element (initially set to the domain name or local page name)
         const title = document.createElement('div');
         title.className = 'tab-title';
-        title.textContent = new URL(url).hostname;
+        
+        // Check if it's a local file or external URL
+        if (url.startsWith('file:') || url.includes(`${window.location.hostname}`) || !url.match(/^https?:\/\//)) {
+          // For local files, extract the page name from the URL
+          const pageName = url.split('/').pop().split('.')[0];
+          title.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1); // Capitalize first letter
+        } else {
+          // For external URLs, use the hostname
+          title.textContent = new URL(url).hostname;
+        }
         
         // Close button
         const closeButton = document.createElement('button');
@@ -764,8 +744,8 @@ Description: A desktop application that provides a convenient way to access vari
         viewElement.dataset.tabId = tabId;
         viewElement.appendChild(webview);
         
-        // If this is the first tab, create the "new tab" button, unless it's a system page
-        if (this.tabs.length === 0 || !this.tabs.some(t => !t.isSystemPage)) {
+        // If this is the first tab, create the "new tab" button
+        if (this.tabs.length === 0) {
           this.createNewTabButton();
         }
         
@@ -780,7 +760,7 @@ Description: A desktop application that provides a convenient way to access vari
           element: tabElement,
           view: viewElement,
           webview: webview,
-          isSystemPage: false
+          isMenuTab: isMenuTab
         });
         
         // Set up webview event listeners
@@ -796,6 +776,30 @@ Description: A desktop application that provides a convenient way to access vari
         
         // Ensure the new tab is visible by scrolling if needed
         this.scrollToTab(tabElement);
+        
+        // Update new tab button visibility based on latest tab
+        this.updateNewTabButtonVisibility();
+      },
+      
+      // Check if a URL is for a menu tab (Settings, Support, Help, About)
+      isMenuTab(url) {
+        const menuPages = ['settings.html', 'support.html', 'help.html', 'about.html'];
+        return menuPages.some(page => url.endsWith(page));
+      },
+      
+      // Update the visibility of the new tab button based on the rightmost tab
+      updateNewTabButtonVisibility() {
+        if (!this.newTabButton || this.tabs.length === 0) return;
+        
+        // Get the rightmost tab (the last one in the array)
+        const rightmostTab = this.tabs[this.tabs.length - 1];
+        
+        // Show the new tab button only if the rightmost tab is a service tab
+        if (rightmostTab.isMenuTab) {
+          this.newTabButton.style.display = 'none';
+        } else {
+          this.newTabButton.style.display = 'flex';
+        }
       },
       
       // Create the "+" button for adding new tabs
@@ -849,15 +853,7 @@ Description: A desktop application that provides a convenient way to access vari
           const currentTab = this.tabs.find(tab => tab.id === this.activeTabId);
           if (currentTab) {
             currentTab.element.classList.remove('active');
-            
-            // Handle different tab types
-            if (currentTab.isSystemPage) {
-              // For system tabs, hide the webview directly
-              currentTab.webview.style.display = 'none';
-            } else {
-              // For regular tabs, hide the view container
-              currentTab.view.style.display = 'none';
-            }
+            currentTab.view.classList.remove('active');
           }
         }
         
@@ -865,16 +861,7 @@ Description: A desktop application that provides a convenient way to access vari
         const tab = this.tabs.find(tab => tab.id === tabId);
         if (tab) {
           tab.element.classList.add('active');
-          
-          // Handle different tab types
-          if (tab.isSystemPage) {
-            // For system tabs, show the webview directly
-            tab.webview.style.display = 'flex';
-          } else {
-            // For regular tabs, show the view container
-            tab.view.style.display = 'flex';
-          }
-          
+          tab.view.classList.add('active');
           this.activeTabId = tabId;
         }
       },
@@ -886,17 +873,10 @@ Description: A desktop application that provides a convenient way to access vari
         if (tabIndex === -1) return;
         
         const tab = this.tabs[tabIndex];
-        const isSystemTab = tab.isSystemPage;
         
-        // Remove the tab element from the DOM
+        // Remove the tab and view elements from the DOM
         tab.element.remove();
-        
-        // Remove the webview or view element depending on tab type
-        if (isSystemTab) {
-          tab.webview.remove();
-        } else {
-          tab.view.remove();
-        }
+        tab.view.remove();
         
         // If we're closing the active tab, activate another tab
         if (this.activeTabId === tabId) {
@@ -916,11 +896,13 @@ Description: A desktop application that provides a convenient way to access vari
         // Remove the tab from our array
         this.tabs.splice(tabIndex, 1);
         
-        // If we've removed the last regular tab, remove the new tab button
-        const hasRegularTabs = this.tabs.some(t => !t.isSystemPage);
-        if (!hasRegularTabs && this.newTabButton) {
+        // If we've removed the last tab, remove the new tab button
+        if (this.tabs.length === 0 && this.newTabButton) {
           this.newTabButton.remove();
           this.newTabButton = null;
+        } else {
+          // Otherwise, update the new tab button visibility
+          this.updateNewTabButtonVisibility();
         }
         
         // Update scroll buttons visibility
@@ -956,92 +938,6 @@ Description: A desktop application that provides a convenient way to access vari
         if (this.updateScrollButtonsCallback) {
           this.updateScrollButtonsCallback();
         }
-      },
-      
-      // Create a system tab (settings, help, about, contribute)
-      createSystemTab(page) {
-        // Generate a unique ID for the tab
-        const tabId = `system-${page}-${Date.now()}`;
-        
-        // Hide the welcome screen when creating a tab
-        document.getElementById('welcome-screen').style.display = 'none';
-        
-        // Create the tab element
-        const tabElement = document.createElement('div');
-        tabElement.className = 'tab system-tab';
-        tabElement.dataset.tabId = tabId;
-        
-        // Title for the tab
-        const title = document.createElement('div');
-        title.className = 'tab-title';
-        title.textContent = page.charAt(0).toUpperCase() + page.slice(1); // Capitalize first letter
-        
-        // Close button
-        const closeButton = document.createElement('button');
-        closeButton.className = 'tab-close';
-        closeButton.innerHTML = '&times;';
-        closeButton.addEventListener('click', (e) => {
-          e.stopPropagation(); // Prevent tab activation when clicking close
-          this.closeTab(tabId);
-        });
-        
-        // Add elements to the tab
-        tabElement.appendChild(title);
-        tabElement.appendChild(closeButton);
-        
-        // Add event listener to activate the tab when clicked
-        tabElement.addEventListener('click', () => {
-          this.activateTab(tabId);
-        });
-        
-        // Create the webview element
-        const webview = document.createElement('webview');
-        webview.src = `src/${page}.html`;
-        webview.partition = 'persist:aib';
-        
-        // Set unique CSS class for system webviews
-        webview.className = 'system-webview';
-        
-        // Set webview attributes
-        webview.style.height = '100%';
-        webview.style.width = '100%';
-        webview.style.display = 'flex';
-        
-        // Add webview load event listeners
-        webview.addEventListener('did-start-loading', () => {
-          tabElement.classList.add('loading');
-        });
-        
-        webview.addEventListener('did-stop-loading', () => {
-          tabElement.classList.remove('loading');
-        });
-        
-        // Add webview to the page
-        webview.style.display = 'none'; // Initially hidden
-        this.viewsContainer.appendChild(webview);
-        
-        // Store tab information
-        const tab = {
-          id: tabId,
-          element: tabElement,
-          webview: webview,
-          isSystemPage: true
-        };
-        
-        this.tabs.push(tab);
-        
-        // Add tab element to the tabs container
-        this.tabsContainer.appendChild(tabElement);
-        
-        // Activate the tab
-        this.activateTab(tabId);
-        
-        // Update scroll buttons
-        if (this.updateScrollButtonsCallback) {
-          this.updateScrollButtonsCallback();
-        }
-        
-        return tab;
       }
     };
 
@@ -1070,6 +966,9 @@ Description: A desktop application that provides a convenient way to access vari
       // Set up tooltips
       setupTooltips();
       
+      // Set up menu dropdown
+      setupMenuDropdown();
+      
       // Listen for messages from the main process
       const { ipcRenderer } = require('electron');
       
@@ -1095,6 +994,54 @@ Description: A desktop application that provides a convenient way to access vari
         }
       });
     });
+
+    // Set up menu dropdown functionality
+    function setupMenuDropdown() {
+      const menuButton = document.querySelector('.menu-button');
+      const dropdownMenu = document.getElementById('dropdown-menu');
+      
+      // Toggle dropdown when clicking the menu button
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', () => {
+        dropdownMenu.classList.remove('show');
+      });
+      
+      // Prevent dropdown from closing when clicking inside it
+      dropdownMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      
+      // Set up menu item functionality
+      const menuItems = dropdownMenu.querySelectorAll('button');
+      menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const url = item.getAttribute('data-url');
+          if (url) {
+            // Create a new tab with the selected menu item
+            const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+            const tabUrl = `${baseUrl}${url}.html`;
+            
+            // Check if there's already a tab with this URL
+            const existingTab = tabManager.tabs.find(tab => tab.url === tabUrl);
+            if (existingTab) {
+              // If a tab with this URL exists, activate it
+              tabManager.activateTab(existingTab.id);
+            } else {
+              // Otherwise, create a new tab
+              tabManager.createTab(tabUrl);
+            }
+            
+            // Close the dropdown
+            dropdownMenu.classList.remove('show');
+          }
+        });
+      });
+    }
   </script>
 </body>
 </html> 

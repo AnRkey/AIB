@@ -274,6 +274,11 @@ app.on('window-all-closed', () => {
 function setupUrlHandling(window) {
   // Handle navigation events from webContents
   window.webContents.on('will-navigate', (event, url) => {
+    // Allow local file URLs and app pages
+    if (url.startsWith('file:') || url.includes(app.getAppPath())) {
+      return; // Allow navigation
+    }
+    
     const shouldHandleInternally = allowedUrlPatterns.some(pattern => pattern.test(url));
     
     if (!shouldHandleInternally) {
@@ -284,6 +289,11 @@ function setupUrlHandling(window) {
   
   // Handle new window creation
   window.webContents.setWindowOpenHandler(({ url }) => {
+    // Allow local file URLs and app pages
+    if (url.startsWith('file:') || url.includes(app.getAppPath())) {
+      return { action: 'allow' };
+    }
+    
     const shouldHandleInternally = allowedUrlPatterns.some(pattern => pattern.test(url));
     
     if (shouldHandleInternally) {

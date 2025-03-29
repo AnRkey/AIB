@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
+  <title>Settings</title>
+  <style>
+    :root {
+      /* Light mode colors (default) */
+      --bg-color: #fff;
+      --text-color: #333;
+      --section-bg: #f5f5f5;
+      --border-color: #ddd;
+      --heading-color: #007bff;
+      --button-bg: #007bff;
+      --button-text: white;
+      --button-hover-bg: #0069d9;
+    }
+
+    /* Dark mode theme */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #222;
+        --text-color: #eee;
+        --section-bg: #333;
+        --border-color: #555;
+        --heading-color: #4da6ff;
+        --button-bg: #0066cc;
+        --button-text: white;
+        --button-hover-bg: #0052a3;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .settings-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .settings-section {
+      background-color: var(--section-bg);
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--heading-color);
+    }
+
+    .setting-option {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    button {
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: var(--button-hover-bg);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      width: auto;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-container">
+    <h1>Settings</h1>
+
+    <div class="settings-section">
+      <h2>Appearance</h2>
+      <div class="setting-option">
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="system">System Default</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h2>Behavior</h2>
+      <div class="setting-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="always-on-top">
+          Start with Always on Top enabled
+        </label>
+      </div>
+      <div class="setting-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="start-maximized">
+          Start maximized
+        </label>
+      </div>
+      <div class="setting-option">
+        <label for="default-service">Default AI Service</label>
+        <select id="default-service">
+          <option value="chatgpt">ChatGPT</option>
+          <option value="claude">Claude</option>
+          <option value="gemini">Gemini</option>
+          <option value="grok">Grok</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h2>Privacy</h2>
+      <div class="setting-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="clear-cookies">
+          Clear cookies on exit
+        </label>
+      </div>
+    </div>
+
+    <button id="save-settings">Save Settings</button>
+  </div>
+
+  <script>
+    // Settings functionality would be implemented here
+    document.getElementById('save-settings').addEventListener('click', () => {
+      alert('Settings saved!');
+      // In a real implementation, this would save to electron-store or similar
+    });
+  </script>
+</body>
+</html> 
