@@ -78,6 +78,13 @@
       color: var(--button-active-text);
     }
 
+    .settings-tab.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: var(--border-color);
+      color: var(--description-color);
+    }
+
     .settings-section {
       display: none;
       padding: 15px;
@@ -270,7 +277,7 @@
 
     <div class="settings-tabs">
       <div class="settings-tab active" data-tab="general">General</div>
-      <div class="settings-tab" data-tab="audio">Audio</div>
+      <div class="settings-tab disabled" data-tab="audio">Audio</div>
       <div class="settings-tab" data-tab="privacy">Privacy</div>
       <div class="settings-tab" data-tab="proxy">Proxy</div>
     </div>
@@ -363,6 +370,27 @@
       // Make sure save button is hidden initially
       saveButton.style.display = 'none';
       
+      // Set up tab switching
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (event) => {
+          // Skip action if tab is disabled
+          if (tab.classList.contains('disabled')) {
+            return;
+          }
+          
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          // Add active class to clicked tab
+          tab.classList.add('active');
+          
+          // Hide all sections
+          sections.forEach(section => section.classList.remove('active'));
+          // Show section corresponding to clicked tab
+          const tabName = tab.getAttribute('data-tab');
+          document.getElementById(`${tabName}-section`).classList.add('active');
+        });
+      });
+      
       // Global save function to ensure we can call it directly
       window.saveAndHide = function() {
         try {
@@ -445,24 +473,6 @@
       document.getElementById('aot-startup').addEventListener('click', function() {
         console.log('Checkbox clicked directly');
         saveButton.style.display = 'block';
-      });
-
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          const targetId = `${tab.dataset.tab}-section`;
-          
-          // Update active tab
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          
-          // Show selected section
-          sections.forEach(section => {
-            section.classList.remove('active');
-            if (section.id === targetId) {
-              section.classList.add('active');
-            }
-          });
-        });
       });
 
       // Modal functionality
