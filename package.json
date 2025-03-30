@@ -1,6 +1,6 @@
 {
   "name": "AIB",
-  "version": "1.0.0-b2",
+  "version": "1.0.0-b3",
   "description": "AI Browser application for accessing various AI services",
   "main": "src/main.js",
   "scripts": {
@@ -53,7 +53,7 @@
           ]
         }
       ],
-      "icon": "src/AIB_logo.png",
+      "icon": "assets/images/AIB_logo.png",
       "sign": null,
       "forceCodeSigning": false
     },

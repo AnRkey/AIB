@@ -19,7 +19,7 @@ AIB (AI Browser) is an Electron-based desktop application that provides a conven
 AIB/
 ├── src/                    # Source code
 │   ├── main.js             # Main Electron process
-│   ├── preload.js          # Preload script for webviews
+│   ├── preload.js          # Preload script for renderer
 │   ├── settings.html       # Settings page
 │   ├── settings-preload.js # Preload script for settings
 │   ├── renderer.js         # Renderer process code
@@ -29,7 +29,11 @@ AIB/
 │   └── AIB_background.jpg  # Welcome screen background
 ├── build/                  # Build output directory
 ├── docs/                   # Documentation
-├── assets/                 # Additional assets
+├── assets/                 # Application assets
+│   ├── images/            # Images used in the application
+│   │   ├── AIB.ico        # Application icon
+│   │   ├── AIB_logo.png   # Application logo
+│   │   └── AIB_background.jpg # Welcome screen background
 ├── node_modules/           # Dependencies (not in repo)
 ├── index.html              # Main application HTML
 ├── styles.css              # Application styles

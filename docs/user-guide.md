@@ -16,13 +16,13 @@ AIB (AI Browser) is a desktop application designed to provide a clean, simple in
 AIB can be installed in two ways:
 
 1. **Installer Version**
-   - Download [AIB_Installer-v1.0.0-b2.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Installer-v1.0.0-b2.exe)
+   - Download [AIB_Installer-v1.0.0-b3.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Installer-v1.0.0-b3.exe)
    - Run the installer and follow the on-screen instructions
    - The application will be installed in your Program Files directory
    - A desktop shortcut will be created automatically
 
 2. **Portable Version**
-   - Download [AIB_Portable-v1.0.0-b2.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Portable-v1.0.0-b2.exe) or [AIB_Portable-v1.0.0-b2.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Portable-v1.0.0-b2.zip)
+   - Download [AIB_Portable-v1.0.0-b3.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Portable-v1.0.0-b3.exe) or [AIB_Portable-v1.0.0-b3.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Portable-v1.0.0-b3.zip)
    - For the EXE version, simply run the executable from any location
    - For the ZIP version, extract the contents to a location of your choice and run the executable
 
@@ -73,7 +73,7 @@ Access the settings window by clicking the Settings icon in the top-right corner
 
 #### General
 - **Application Behavior**: Configure startup settings
-  - **Always on top when application starts**: When enabled, all new application windows will open in "Always on Top" mode
+  - **Always on top when application starts**: When enabled, new application windows will open in "Always on Top" mode. This setting only affects windows created after changing the setting and does not modify the state of currently open windows.
 
 #### Audio
 - **Microphone**: Select your default microphone for voice interactions with AI services

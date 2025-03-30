@@ -1,12 +1,12 @@
-# AIB - AI Browser v1.0.0-b2
+# AIB - AI Browser v1.0.0-b3
 
-![Logo](src/AIB_logo.png)
+![Logo](assets/images/AIB_logo.png)
 
 ## Description
-AIB is a desktop application that provides a convenient way to access various AI services in a tabbed browser interface. It offers a simple, clean interface optimized for AI interactions.
+AI Browser (AIB) is an Electron-based desktop application that provides a convenient way to access and use various AI services in a tabbed browser interface. It offers a simple, clean interface optimized for AI interactions.
 
 ## Screenshot
-![Screenshot](screenshot.png)
+![Screenshot](assets/images/screenshot.png)
 
 ## Features
 - Simple, clean interface optimized for AI interactions
@@ -21,11 +21,11 @@ AIB is a desktop application that provides a convenient way to access various AI
 - Chrome 134 user-agent for optimal compatibility with AI services
 
 ## Download
-[Download AIB_Installer-v1.0.0-b2.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Installer-v1.0.0-b2.exe)
+[Download AIB_Installer-v1.0.0-b3.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Installer-v1.0.0-b3.exe)
 
-[Download AIB_Portable-v1.0.0-b2.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Portable-v1.0.0-b2.exe)
+[Download AIB_Portable-v1.0.0-b3.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Portable-v1.0.0-b3.exe)
 
-[Download AIB_Portable-v1.0.0-b2.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b2/AIB_Portable-v1.0.0-b2.zip)
+[Download AIB_Portable-v1.0.0-b3.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Portable-v1.0.0-b3.zip)
 
 ## Prerequisites for use
 - Windows 10 or 11
@@ -44,9 +44,9 @@ AIB is a desktop application that provides a convenient way to access various AI
   - `preload.js` - Preload script for the renderer process
   - `renderer.js` - Renderer process code
   - `custom-tabs.js` - Custom tabs implementation
-  - `AIB.ico` - Application icon
-  - `AIB_logo.png` - Application logo
-  - `AIB_background.jpg` - Background image for welcome screen
+  - `assets/images/AIB.ico` - Application icon
+  - `assets/images/AIB_logo.png` - Application logo
+  - `assets/images/AIB_background.jpg` - Background image for welcome screen
 - `index.html` - Main application HTML (fully documented with comments)
 - `styles.css` - Application styles
 - `build.bat` - Build script for Windows
@@ -56,13 +56,14 @@ AIB is a desktop application that provides a convenient way to access various AI
   - `architecture.md` - Architecture overview
 
 ## Documentation
-The project includes comprehensive documentation in the `docs/` directory:
 
-- **User Guide**: Instructions for installing and using the application
-- **Developer Guide**: Information for developers who want to contribute or modify the code
-- **Architecture Overview**: Explanation of the application's structure and design principles
+Detailed documentation is available in the `docs/` directory:
 
-For more details, see the [documentation](docs/).
+- [User Guide](docs/user-guide.md) - Instructions for end users
+- [Developer Guide](docs/developer-guide.md) - Information for developers
+- [Architecture](docs/architecture.md) - Technical architecture overview
+
+For contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Build AIB
 1. Install Node.js from [nodejs.org](https://nodejs.org/).

@@ -150,7 +150,7 @@ function createWindow() {
       allowRunningInsecureContent: false, // Don't allow running insecure content
       devTools: true // Always enable DevTools capability
     },
-    icon: path.join(__dirname, 'AIB.ico'),
+    icon: path.join(__dirname, '../assets/images/AIB.ico'),
     title: `AI Browser v${appVersion}`
   });
 
@@ -354,12 +354,9 @@ function setupIpcHandlers() {
     // Save the new settings
     settings.set(newSettings);
     
-    // Apply always-on-top setting to all windows
-    if (newSettings.alwaysOnTop !== undefined) {
-      windows.forEach(window => {
-        window.setAlwaysOnTop(newSettings.alwaysOnTop);
-      });
-    }
+    // Don't apply always-on-top setting to current windows
+    // The setting will only affect new windows created after this point
+    // This way the checkbox only sets startup preference without affecting current windows
     
     return true;
   });
