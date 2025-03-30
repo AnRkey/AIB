@@ -104,13 +104,7 @@ if (!gotTheLock) {
         defaults: {
           alwaysOnTop: false,
           selectedMicrophone: null,
-          selectedSpeaker: null,
-          proxy: {
-            enabled: false,
-            address: '',
-            username: '',
-            password: ''
-          }
+          selectedSpeaker: null
         }
       });
       
@@ -129,9 +123,6 @@ if (!gotTheLock) {
         details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36';
         callback({ requestHeaders: details.requestHeaders });
       });
-
-      // Apply proxy settings if enabled
-      applyProxySettings();
 
       // Enable spellchecking
       session.defaultSession.setSpellCheckerLanguages(['en-US']);
@@ -228,40 +219,21 @@ function createWindow() {
   return newWindow;
 }
 
-// Apply proxy settings from the settings store
-function applyProxySettings() {
-  if (!settings) return;
-  
-  const proxySettings = settings.get('proxy');
-  
-  if (proxySettings && proxySettings.enabled && proxySettings.address) {
-    // Parse the address
-    const proxyUrl = proxySettings.address;
-    
-    // Set proxy configuration
-    if (proxySettings.username && proxySettings.password) {
-      // With authentication
-      session.defaultSession.setProxy({
-        proxyRules: proxyUrl,
-        proxyBypassRules: '<local>',
-        credentials: {
-          username: proxySettings.username,
-          password: proxySettings.password
-        }
-      });
-    } else {
-      // Without authentication
-      session.defaultSession.setProxy({
-        proxyRules: proxyUrl,
-        proxyBypassRules: '<local>'
-      });
+// Open Windows system proxy settings
+function openSystemProxySettings() {
+  try {
+    if (shouldEnableDevTools) {
+      console.log('Opening system proxy settings...');
     }
-    
-    console.log('Proxy settings applied:', proxyUrl);
-  } else {
-    // Clear proxy settings
-    session.defaultSession.setProxy({});
-    console.log('No proxy settings applied');
+    // Open Windows system proxy settings using ms-settings URI
+    shell.openExternal('ms-settings:network-proxy');
+    if (shouldEnableDevTools) {
+      console.log('System proxy settings opened successfully');
+    }
+    return true;
+  } catch (error) {
+    console.error('Error opening system proxy settings:', error);
+    return false;
   }
 }
 
@@ -389,9 +361,6 @@ function setupIpcHandlers() {
       });
     }
     
-    // Apply proxy settings
-    applyProxySettings();
-    
     return true;
   });
   
@@ -455,5 +424,13 @@ function setupIpcHandlers() {
       node: process.versions.node,
       v8: process.versions.v8
     };
+  });
+
+  // Open system proxy settings
+  ipcMain.handle('open-system-proxy-settings', async (event) => {
+    if (shouldEnableDevTools) {
+      console.log('Received request to open system proxy settings');
+    }
+    return openSystemProxySettings();
   });
 } 

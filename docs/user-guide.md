@@ -44,6 +44,7 @@ The AIB interface consists of the following components:
 - **Right Controls**:
   - **+Window**: Opens a new instance of AIB
   - **AOT**: Toggles "Always on Top" mode to keep AIB visible over other windows
+  - **Settings**: Opens the application settings window
 
 ## Using AIB
 
@@ -66,6 +67,33 @@ The "AOT" button in the top-right corner toggles "Always on Top" mode. When acti
 #### Multiple Instances
 The "+Window" button opens a new instance of AIB, allowing you to organize your AI interactions in separate windows. Each instance operates independently.
 
+### Application Settings
+
+Access the settings window by clicking the Settings icon in the top-right corner. The settings window includes several tabs:
+
+#### General
+- **Application Behavior**: Configure startup settings
+  - **Always on top when application starts**: When enabled, all new application windows will open in "Always on Top" mode
+
+#### Audio
+- **Microphone**: Select your default microphone for voice interactions with AI services
+- **Audio Output**: Select your default speaker for AI voice responses
+
+#### Privacy
+- **Browser Data**: Manage your browsing data
+  - **Clear All Browsing Data**: Removes cookies, login sessions, and other browsing data for all AI services
+
+#### Proxy
+- **Proxy Configuration**: Access your system proxy settings
+  - **Open System Proxy Settings**: Opens the Windows network proxy configuration
+
+#### Saving Settings
+When you make changes to settings in the General or Audio sections:
+1. A "Save Settings" button will appear at the bottom of the window
+2. Click the button to save your changes
+3. The button will disappear after saving
+4. The button will reappear only when you make new changes
+
 ## Tips and Tricks
 
 1. **Comparing AI Responses**: Open different AI services in separate tabs to easily compare their responses to the same prompt.
@@ -77,6 +105,8 @@ The "+Window" button opens a new instance of AIB, allowing you to organize your 
 4. **Tab Management**: Close tabs you're no longer using to keep the interface clean and reduce resource usage.
 
 5. **Browser Compatibility**: AIB identifies as Chrome 134 to all websites, ensuring optimal compatibility with AI services and avoiding "unsupported browser" messages.
+
+6. **Audio Device Selection**: Configure your preferred microphone and speaker in the Settings window for consistent audio experience.
 
 ## Troubleshooting
 
@@ -94,6 +124,7 @@ The "+Window" button opens a new instance of AIB, allowing you to organize your 
 3. **Login Issues**
    - AIB uses your system's persistent storage for cookies, so you should stay logged in to services between sessions
    - If you're repeatedly asked to log in, check if your browser's cookies are being cleared automatically
+   - If you're still having issues, try using the "Clear All Browsing Data" button in Settings > Privacy and logging in again
 
 ### Getting Help
 

@@ -20,6 +20,8 @@ AIB/
 ├── src/                    # Source code
 │   ├── main.js             # Main Electron process
 │   ├── preload.js          # Preload script for webviews
+│   ├── settings.html       # Settings page
+│   ├── settings-preload.js # Preload script for settings
 │   ├── renderer.js         # Renderer process code
 │   ├── custom-tabs.js      # Custom tabs implementation
 │   ├── AIB.ico             # Application icon
@@ -74,16 +76,26 @@ AIB/
 
 The main Electron process that:
 - Creates the application window
-- Sets up IPC communication
+- Sets up IPC handlers for settings management
 - Handles application lifecycle events
 - Manages "Always on Top" functionality
 - Handles new instance creation
+- Opens and manages the settings window
 
 ### Preload Script (`preload.js`)
 
 A script that runs in the context of the webview before the web content loads, which:
 - Bridges between the renderer process and Node.js/Electron APIs
 - Exposes selected APIs to the webview content safely
+
+### Settings Implementation (`settings.html` and `settings-preload.js`)
+
+The settings page provides user configuration options:
+- Separate window created from the main process
+- Tab-based interface for different settings categories
+- Uses IPC for communication with the main process
+- Implements real-time change detection for UX feedback
+- Includes privacy controls for clearing browsing data
 
 ### Renderer Process (`renderer.js`)
 
@@ -111,6 +123,7 @@ Custom implementation for browser-like tabs:
 
 - `index.html`: Main application structure with comprehensive comments
 - `styles.css`: Styling for the application, including theme support
+- `settings.html`: Settings page with consistent styling
 
 ## Build Process
 
@@ -149,6 +162,32 @@ To add a new AI service to the sidebar:
    <button class="toolbar-button" data-url="https://new-ai-service.com">Service Name</button>
    ```
 
+### Settings Page Implementation
+
+The settings page (`settings.html`) is designed with several key features:
+
+1. **Tab-based Interface**: Uses CSS and JavaScript to create a tabbed interface
+2. **IPC Communication**: Uses Electron IPC for secure communication with the main process
+3. **Reactive Save Button**: Shows the save button only when settings are changed
+4. **Persistent Storage**: Uses Electron Store for persistent settings storage
+5. **Consistent Styling**: Shares design elements with the main application
+
+#### Save Button Behavior
+
+The save button implementation includes:
+
+1. **State Tracking**: 
+   - Maintains original values for comparison
+   - Shows button only when current values differ from saved values
+   - Button remains visible across tab switches if changes exist
+   - Button disappears after saving until new changes are made
+
+2. **Implementation Details**:
+   - Uses direct inline event handler for reliability
+   - Shows/hides using CSS display property
+   - Updates the original value trackers after successful save
+   - Uses setTimeout for safety to ensure button remains hidden
+
 ### Modifying Theme/Styling
 
 The application uses CSS variables for theming. To modify the appearance:
@@ -174,6 +213,7 @@ When running in development mode, you can access the Developer Tools:
 
 1. Press `Ctrl+Shift+I` to open the main window's Developer Tools
 2. Right-click on a webview and select "Inspect Element" to open Developer Tools for that webview
+3. Use the `--enable-devtools` flag with `npm run dev` to enable DevTools in production builds
 
 ### Common Issues
 
@@ -185,6 +225,11 @@ When running in development mode, you can access the Developer Tools:
 2. **IPC Communication Failures**
    - Ensure the channel names match between main and renderer processes
    - Check that the required methods are exposed in the preload script
+
+3. **Settings Save Button Not Working**
+   - Ensure event handlers are properly attached
+   - Check for console errors in the settings window
+   - Verify the save function is properly updating original value trackers
 
 ## Building for Distribution
 

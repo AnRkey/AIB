@@ -503,7 +503,7 @@ Description: A desktop application that provides a convenient way to access vari
       <div class="menu-container" id="menu-container">
         <button class="menu-button tooltip" data-tooltip="Application Menu">☰</button>
         <div class="dropdown-menu" id="dropdown-menu">
-          <button data-url="settings">Settings</button>
+          <button data-url="src/settings">Settings</button>
           <button data-url="support">Support</button>
           <button data-url="help">Help</button>
           <button data-url="about">About</button>
@@ -733,6 +733,19 @@ Description: A desktop application that provides a convenient way to access vari
         webview.partition = 'persist:aib';
         webview.setAttribute('allowpopups', 'true');
         
+        // Enable safe Node.js integration for internal pages only (settings, help, etc.)
+        if (this.isMenuTab(url)) {
+          // Get the basename of the URL (e.g., settings.html -> settings)
+          const pageName = url.split('/').pop().split('.')[0];
+          // Check if we have a preload script for this page
+          if (pageName === 'settings') {
+            // Set the preload script for the settings page
+            const preloadPath = `${window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1)}src/settings-preload.js`;
+            webview.setAttribute('preload', preloadPath);
+            console.log(`Using preload script for ${pageName}: ${preloadPath}`);
+          }
+        }
+        
         // Set the browser identification to Chrome 134
         // This ensures consistent experience across websites and AI services
         // Note: This should match the User-Agent set in main.js for all HTTP requests
@@ -783,7 +796,7 @@ Description: A desktop application that provides a convenient way to access vari
       
       // Check if a URL is for a menu tab (Settings, Support, Help, About)
       isMenuTab(url) {
-        const menuPages = ['settings.html', 'support.html', 'help.html', 'about.html'];
+        const menuPages = ['src/settings.html', 'support.html', 'help.html', 'about.html'];
         return menuPages.some(page => url.endsWith(page));
       },
       

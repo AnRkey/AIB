@@ -332,7 +332,7 @@
       </div>
     </div>
 
-    <button id="save-settings" class="save-button" onclick="return saveAndHide();">Save Settings</button>
+    <button id="save-settings" class="save-button">Save Settings</button>
   </div>
 
   <!-- Confirmation Modal for Clear Data -->
@@ -363,89 +363,36 @@
       // Make sure save button is hidden initially
       saveButton.style.display = 'none';
       
-      // Global save function to ensure we can call it directly
-      window.saveAndHide = function() {
-        try {
-          console.log('saveAndHide called - hiding button');
-          const saveBtn = document.getElementById('save-settings');
-          saveBtn.style.display = 'none';
-          
-          const newSettings = {
-            alwaysOnTop: document.getElementById('aot-startup').checked,
-            selectedMicrophone: document.getElementById('microphone-select').value,
-            selectedSpeaker: document.getElementById('speaker-select').value
-          };
-          
-          window.electronAPI.saveSettings(newSettings)
-            .then(() => {
-              // Update our tracking variables
-              originalAlwaysOnTop = newSettings.alwaysOnTop;
-              originalMicrophone = newSettings.selectedMicrophone;
-              originalSpeaker = newSettings.selectedSpeaker;
-              
-              // Force button to remain hidden
-              setTimeout(() => { 
-                saveBtn.style.display = 'none';
-                console.log('Button forced hidden after save'); 
-              }, 10);
-            })
-            .catch(error => {
-              console.error('Error saving settings:', error);
-              alert('Failed to save settings: ' + error.message);
-            });
-        } catch (error) {
-          console.error('Error in saveAndHide:', error);
-        }
-        
-        // Prevent form submission
-        return false;
-      }
-      
       // Function to check for changes and update save button visibility
       function checkForChanges() {
-        try {
-          const currentAlwaysOnTop = document.getElementById('aot-startup').checked;
-          const currentMicrophone = document.getElementById('microphone-select').value;
-          const currentSpeaker = document.getElementById('speaker-select').value;
-          
-          // Check if any settings are different from original
-          const changed = (
-            currentAlwaysOnTop !== originalAlwaysOnTop ||
-            currentMicrophone !== originalMicrophone ||
-            currentSpeaker !== originalSpeaker
-          );
-          
-          console.log('Settings changed check:', {
-            original: { 
-              alwaysOnTop: originalAlwaysOnTop, 
-              mic: originalMicrophone, 
-              speaker: originalSpeaker 
-            },
-            current: { 
-              alwaysOnTop: currentAlwaysOnTop, 
-              mic: currentMicrophone, 
-              speaker: currentSpeaker 
-            },
-            changed: changed
-          });
-          
-          // Update button visibility - force it to be visible if changed
-          if (changed) {
-            console.log('CHANGES DETECTED - Setting save button to display:block');
-            saveButton.style.display = 'block';
-          } else {
-            saveButton.style.display = 'none';
-          }
-        } catch (error) {
-          console.error('Error in checkForChanges:', error);
-        }
+        const currentAlwaysOnTop = document.getElementById('aot-startup').checked;
+        const currentMicrophone = document.getElementById('microphone-select').value;
+        const currentSpeaker = document.getElementById('speaker-select').value;
+        
+        // Check if any settings are different from original
+        const changed = (
+          currentAlwaysOnTop !== originalAlwaysOnTop ||
+          currentMicrophone !== originalMicrophone ||
+          currentSpeaker !== originalSpeaker
+        );
+        
+        console.log('Settings changed check:', {
+          original: { 
+            alwaysOnTop: originalAlwaysOnTop, 
+            mic: originalMicrophone, 
+            speaker: originalSpeaker 
+          },
+          current: { 
+            alwaysOnTop: currentAlwaysOnTop, 
+            mic: currentMicrophone, 
+            speaker: currentSpeaker 
+          },
+          changed: changed
+        });
+        
+        // Update button visibility
+        saveButton.style.display = changed ? 'block' : 'none';
       }
-      
-      // Directly add simple change handlers for immediate debugging
-      document.getElementById('aot-startup').addEventListener('click', function() {
-        console.log('Checkbox clicked directly');
-        saveButton.style.display = 'block';
-      });
 
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -558,21 +505,46 @@
             speakerSelect.innerHTML = '<option value="">No speakers found</option>';
           }
           
-          // Add direct click handlers for audio selects
-          microphoneSelect.addEventListener('change', function() {
-            console.log('Microphone select changed directly');
-            saveButton.style.display = 'block';
-          });
-          
-          speakerSelect.addEventListener('change', function() {
-            console.log('Speaker select changed directly');
-            saveButton.style.display = 'block';
-          });
-          
           // Add event listeners for changes
           document.getElementById('aot-startup').addEventListener('change', checkForChanges);
           microphoneSelect.addEventListener('change', checkForChanges);
           speakerSelect.addEventListener('change', checkForChanges);
+          
+          // IMPORTANT: Fixed - Save button event handler
+          saveButton.addEventListener('click', async () => {
+            try {
+              const newSettings = {
+                alwaysOnTop: document.getElementById('aot-startup').checked,
+                selectedMicrophone: microphoneSelect.value,
+                selectedSpeaker: speakerSelect.value
+              };
+              
+              console.log('Saving settings:', newSettings);
+              
+              // Save the settings
+              await window.electronAPI.saveSettings(newSettings);
+              
+              // Update original values
+              originalAlwaysOnTop = newSettings.alwaysOnTop;
+              originalMicrophone = newSettings.selectedMicrophone;
+              originalSpeaker = newSettings.selectedSpeaker;
+              
+              console.log('Settings saved, updated originals:', {
+                alwaysOnTop: originalAlwaysOnTop,
+                mic: originalMicrophone,
+                speaker: originalSpeaker
+              });
+              
+              // Hide the save button
+              saveButton.style.display = 'none';
+              
+              // Show success message
+              alert('Settings saved successfully!');
+            } catch (error) {
+              console.error('Error saving settings:', error);
+              alert('Failed to save settings: ' + error.message);
+            }
+          });
           
         } catch (error) {
           console.error('Error initializing settings:', error);
