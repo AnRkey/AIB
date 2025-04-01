@@ -142,6 +142,8 @@ function createWindow() {
   const newWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    minWidth: 800,
+    minHeight: 600,
     webPreferences: {
       nodeIntegration: true, // Enable Node.js integration
       contextIsolation: false, // Disable context isolation for this use case

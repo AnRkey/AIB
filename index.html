@@ -349,7 +349,7 @@ Description: A desktop application that provides a convenient way to access vari
       top: 5px;
       left: 50px;
       font-size: 14px;
-      color: var(--welcome-text);
+      color: var(--text-color);
       text-align: left;
     }
 
@@ -362,15 +362,34 @@ Description: A desktop application that provides a convenient way to access vari
     }
 
     .app-title-main {
-      font-size: 40px;
+      font-size: 340px;
       font-weight: bold;
       color: var(--text-color);
     }
 
     .app-title-version {
       font-size: 15px;
+      font-weight: normal;
       color: var(--text-color);
-      margin-top: 5px;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+    }
+
+    /* GitHub link styling */
+    .github-link {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: normal;
+      transition: opacity 0.2s;
+    }
+
+    .github-link:hover {
+      opacity: 0.8;
     }
 
     /* Container for webviews */
@@ -540,6 +559,7 @@ Description: A desktop application that provides a convenient way to access vari
           <div class="app-title-version">v1.0.0-b3</div>
         </div>
         <div class="welcome-text">Choose an AI to start chatting with...</div>
+        <a href="https://github.com/AnRkey/AIB" target="_blank" class="github-link">Github Project 🔗</a>
       </div>
     </div>
   </div>
