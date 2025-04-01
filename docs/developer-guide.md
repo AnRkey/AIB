@@ -24,15 +24,15 @@ AIB/
 │   ├── settings-preload.js # Preload script for settings
 │   ├── renderer.js         # Renderer process code
 │   ├── custom-tabs.js      # Custom tabs implementation
-│   ├── AIB.ico             # Application icon
-│   ├── AIB_logo.png        # Application logo
+│   ├── logo.ico             # Application icon
+│   ├── logo.png        # Application logo
 │   └── AIB_background.jpg  # Welcome screen background
 ├── build/                  # Build output directory
 ├── docs/                   # Documentation
 ├── assets/                 # Application assets
 │   ├── images/            # Images used in the application
-│   │   ├── AIB.ico        # Application icon
-│   │   ├── AIB_logo.png   # Application logo
+│   │   ├── logo.ico        # Application icon
+│   │   ├── logo.png   # Application logo
 │   │   └── AIB_background.jpg # Welcome screen background
 ├── node_modules/           # Dependencies (not in repo)
 ├── index.html              # Main application HTML

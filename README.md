@@ -1,6 +1,6 @@
 # AIB - AI Browser v1.0.0-b3
 
-![Logo](assets/images/AIB_logo.png)
+![Logo](assets/images/logo.png)
 
 ## Description
 AI Browser (AIB) is an Electron-based desktop application that provides a convenient way to access and use various AI services in a tabbed browser interface. It offers a simple, clean interface optimized for AI interactions.
@@ -44,8 +44,8 @@ AI Browser (AIB) is an Electron-based desktop application that provides a conven
   - `preload.js` - Preload script for the renderer process
   - `renderer.js` - Renderer process code
   - `custom-tabs.js` - Custom tabs implementation
-  - `assets/images/AIB.ico` - Application icon
-  - `assets/images/AIB_logo.png` - Application logo
+  - `assets/images/logo.ico` - Application icon
+  - `assets/images/logo.png` - Application logo
   - `assets/images/AIB_background.jpg` - Background image for welcome screen
 - `index.html` - Main application HTML (fully documented with comments)
 - `styles.css` - Application styles

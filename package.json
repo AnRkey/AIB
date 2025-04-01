@@ -53,7 +53,7 @@
           ]
         }
       ],
-      "icon": "assets/images/AIB_logo.png",
+      "icon": "assets/images/logo.png",
       "sign": null,
       "forceCodeSigning": false
     },
