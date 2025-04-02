@@ -1,6 +1,6 @@
 {
-  "name": "AIB",
-  "version": "1.0.0-b3",
+  "name": "aib",
+  "version": "1.0.0-b4",
   "description": "AI Browser application for accessing various AI services",
   "main": "src/main.js",
   "scripts": {

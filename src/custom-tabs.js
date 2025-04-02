@@ -57,7 +57,10 @@ class CustomTab {
     this.tabGroup = tabGroup;
     this.title = options.title || 'New Tab';
     this.src = options.src || '';
-    this.webviewAttributes = options.webviewAttributes || {};
+    this.webviewAttributes = {
+      useragent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+      ...options.webviewAttributes
+    };
     
     this.element = document.createElement('div');
     this.element.classList.add('etabs-tab');

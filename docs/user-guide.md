@@ -16,13 +16,13 @@ AIB (AI Browser) is a desktop application designed to provide a clean, simple in
 AIB can be installed in two ways:
 
 1. **Installer Version**
-   - Download [AIB_Installer-v1.0.0-b3.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Installer-v1.0.0-b3.exe)
+   - Download [AIB_Installer-v1.0.0-b4.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b4/AIB_Installer-v1.0.0-b4.exe)
    - Run the installer and follow the on-screen instructions
    - The application will be installed in your Program Files directory
    - A desktop shortcut will be created automatically
 
 2. **Portable Version**
-   - Download [AIB_Portable-v1.0.0-b3.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Portable-v1.0.0-b3.exe) or [AIB_Portable-v1.0.0-b3.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b3/AIB_Portable-v1.0.0-b3.zip)
+   - Download [AIB_Portable-v1.0.0-b4.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b4/AIB_Portable-v1.0.0-b4.exe) or [AIB_Portable-v1.0.0-b4.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b4/AIB_Portable-v1.0.0-b4.zip)
    - For the EXE version, simply run the executable from any location
    - For the ZIP version, extract the contents to a location of your choice and run the executable
 
