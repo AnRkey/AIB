@@ -1,0 +1,52 @@
+---
+description: Guidelines for implementing browser tabs in Electron applications
+globs: ["**/*tabs*.js", "**/*tab*.js", "**/renderer.js"]
+alwaysApply: true
+---
+
+# Tab Implementation Guidelines
+
+<!-- Makes sure tabs behave consistently when users interact with them -->
+- Use consistent event handling for tab creation, selection, and removal
+
+<!-- Prevents the app from using too much memory when tabs are closed -->
+- Implement proper memory management and clean up when tabs are closed
+
+<!-- Allows users to restore their tabs if the app crashes or is restarted -->
+- Save tab state for session restoration (URLs, active tab, scroll position)
+
+<!-- Shows users when a page is loading or when something goes wrong -->
+- Provide visual feedback for loading state and errors in tabs
+
+<!-- Displays website icons to help users identify tabs at a glance -->
+- Implement favicon support for better visual identification
+
+<!-- Prevents performance problems when websites rapidly change their titles -->
+- Use throttling for title updates to prevent performance issues
+
+<!-- Ensures back and forward buttons work correctly in all tabs -->
+- Handle navigation events properly (back, forward, reload)
+
+<!-- Shows a helpful message instead of a blank screen when pages fail to load -->
+- Implement proper error pages for navigation failures
+
+<!-- Lets users navigate tabs using familiar keyboard shortcuts -->
+- Provide keyboard shortcuts for tab operations (Ctrl+T, Ctrl+W, etc.)
+
+<!-- Makes sure tabs look good even when there are many of them open -->
+- Design tabs to be responsive and handle overflow gracefully
+
+<!-- Keeps websites in different tabs from accessing each other's data -->
+- Use proper isolation between tab content (session partitioning)
+
+<!-- Enables intuitive tab organization -->
+- Implement tab reordering through drag and drop interaction
+
+<!-- Provides clear feedback during tab interactions -->
+- Show visual indicators for tab state changes and drag operations
+
+<!-- Ensures consistent tab behavior across the interface -->
+- Handle edge cases in tab interactions (overflow, rapid actions)
+
+<!-- Maintains tab state during reordering -->
+- Preserve tab content and state during reorganization 

@@ -1,0 +1,37 @@
+---
+description: Code style and formatting guidelines for JavaScript applications
+globs: ["**/*.js", "**/*.html", "**/*.css"]
+alwaysApply: true
+---
+
+# Code Style Guidelines
+
+<!-- Makes code easier to read by using the same spacing throughout -->
+- Use consistent indentation (2 spaces for JS/HTML/CSS)
+
+<!-- Follows common JavaScript conventions to make code more readable -->
+- Follow JavaScript Standard Style for JS code
+
+<!-- Uses HTML tags for their intended purpose for better accessibility -->
+- Use semantic HTML elements and maintain proper document structure
+
+<!-- Makes styling more maintainable by separating style from content -->
+- Prefer CSS classes over inline styles
+
+<!-- Makes code easier to understand and maintain by keeping it simple -->
+- Keep functions small and focused on a single responsibility
+
+<!-- Uses descriptive names so it's clear what each part of the code does -->
+- Use meaningful variable and function names
+
+<!-- Explains why complex code works the way it does -->
+- Document complex code sections with clear comments
+
+<!-- Uses modern JavaScript features for cleaner, more concise code -->
+- Prefer ES6+ features (arrow functions, template literals, etc.)
+
+<!-- Makes CSS more maintainable by using a consistent naming pattern -->
+- Organize CSS with consistent naming conventions (BEM recommended)
+
+<!-- Prevents app crashes when network requests or promises fail -->
+- Use proper error handling for async operations

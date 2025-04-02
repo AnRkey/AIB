@@ -152,7 +152,7 @@ function createWindow() {
       allowRunningInsecureContent: false, // Don't allow running insecure content
       devTools: true // Always enable DevTools capability
     },
-    icon: path.join(__dirname, '../assets/images/logo.ico'),
+    icon: path.join(__dirname, 'assets/images/logo.ico'),
     title: `AI Browser v${appVersion}`
   });
 

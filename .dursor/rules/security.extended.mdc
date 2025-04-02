@@ -1,0 +1,53 @@
+---
+description: Extended security guidelines for applications
+globs: ["src/**/*.js", "**/*preload*.js"]
+alwaysApply: false
+manual: true
+---
+
+# Extended Security Guidelines
+
+<!-- Follows the principle of least privilege for all operations -->
+- Implement role-based access control for sensitive operations
+
+<!-- Protects sensitive data in transit and at rest -->
+- Use appropriate encryption for sensitive data storage and transmission
+
+<!-- Maintains security audit logs for critical operations -->
+- Log security-relevant events for monitoring and debugging
+
+<!-- Implements proper session management -->
+- Handle user sessions securely with appropriate timeouts and validation
+
+<!-- Implements secure password policies -->
+- Enforce strong password requirements and secure password storage
+
+<!-- Protects against common attack vectors -->
+- Implement rate limiting and request throttling for API endpoints
+
+<!-- Ensures secure file handling -->
+- Validate and sanitize all file operations and uploads
+
+<!-- Implements secure error handling -->
+- Avoid exposing sensitive information in error messages
+
+<!-- Maintains secure configuration management -->
+- Use environment variables for sensitive configuration
+
+<!-- Implements secure update mechanisms -->
+- Ensure secure delivery and verification of application updates
+
+<!-- Protects against cross-site request forgery -->
+- Implement CSRF tokens for all state-changing operations
+
+<!-- Ensures secure logging practices -->
+- Avoid logging sensitive information and implement log rotation
+
+<!-- Implements secure backup mechanisms -->
+- Ensure secure storage and transmission of backup data
+
+<!-- Protects against timing attacks -->
+- Use constant-time comparison for sensitive operations
+
+<!-- Implements secure memory handling -->
+- Prevent memory leaks and buffer overflows 

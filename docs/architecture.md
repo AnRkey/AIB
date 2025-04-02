@@ -6,7 +6,7 @@ This document provides a high-level overview of the AIB application architecture
 
 AIB is built using Electron, which follows a multi-process architecture:
 
-![Architecture Diagram](../assets/images/logo.png)
+![Architecture Diagram](../src/assets/images/logo.png)
 
 ### Process Structure
 

@@ -1,0 +1,64 @@
+---
+description: Guidelines for using webviews in Electron applications
+globs: ["**/*webview*.js", "**/renderer.js", "**/main.js"]
+alwaysApply: true
+---
+
+# Webview Usage Guidelines
+
+<!-- Configures webviews with the right security settings to prevent vulnerabilities -->
+- Always set proper security attributes (allowpopups, webpreferences, etc.)
+
+<!-- Controls how webviews request access to sensitive features like camera and location -->
+- Implement permission handling for sensitive features
+
+<!-- Keeps different webviews from accessing each other's cookies and data -->
+- Use session partitioning to isolate content between webviews
+
+<!-- Prevents users from being redirected to malicious websites -->
+- Listen for and handle navigation events securely
+
+<!-- Shows useful information when something goes wrong instead of just failing -->
+- Implement proper error handling and fallback content
+
+<!-- Customizes the behavior of websites loaded in webviews to work better with your app -->
+- Use preload scripts to customize webview behavior
+
+<!-- Avoids security risks by limiting direct code injection into web content -->
+- Avoid injecting code directly into webviews unless necessary
+
+<!-- Protects against cross-site scripting and other web security issues -->
+- Set appropriate content security policies
+
+<!-- Ensures the app remains usable even if a website crashes in a webview -->
+- Handle webview crashes and hang events gracefully
+
+<!-- Prevents the app from using too much memory when many webviews are open -->
+- Monitor and manage memory usage of webviews
+
+<!-- Prevents memory leaks by cleaning up event listeners when webviews are closed -->
+- Implement proper event cleanup when webviews are destroyed
+
+<!-- Ensures consistent behavior across different web services -->
+- Implement a flexible browser compatibility strategy
+
+<!-- Maintains consistent web request behavior -->
+- Configure web request headers and properties at the session level
+
+<!-- Sets the standard user agent for all webviews -->
+- Always use the following user agent string for all webviews:
+  ```javascript
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+  ```
+
+<!-- Handles browser feature detection appropriately -->
+- Implement feature detection and fallback mechanisms
+
+<!-- Ensures proper handling of web APIs -->
+- Provide appropriate polyfills or fallbacks for required web features
+
+<!-- Manages browser-specific behaviors consistently -->
+- Document and handle browser-specific quirks and requirements
+
+<!-- Ensures consistent behavior across different web standards -->
+- Follow web standards and implement appropriate fallbacks 
