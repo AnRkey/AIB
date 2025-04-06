@@ -5,13 +5,25 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --enable-devtools",
-    "clean": "powershell -NoProfile -Command if (Test-Path -Path .\\build\\) { Remove-Item -Path .\\build\\ -Recurse -Force -Verbose }",
-    "build": "npm run clean && electron-builder --win --x64",
-    "pack": "electron-builder --dir",
-    "build-portable": "npm run clean && electron-builder --win portable",
-    "build-dir": "npm run clean && electron-builder --dir",
-    "build-installer": "npm run clean && electron-builder --win nsis"
+    "clean-win-all": "powershell -NoProfile -Command if (Test-Path -Path .\\build\\) { Remove-Item -Path .\\build\\ -Recurse -Force -Verbose }",
+    "clean-lin-all": "test -d ./build && rm -rf ./build",
+    "clean-mac-all": "test -d ./build && rm -rf ./build",
+    "build-win-all": "npm run build-win-portable && npm run build-win-dir && npm run build-win-winstaller && npm run build-win-squirrel",
+    "build-win-portable": "electron-builder --win portable",
+    "build-win-dir": "electron-builder --win dir",
+    "build-win-winstaller": "electron-builder --win nsis",
+    "build-win-squirrel": "electron-builder --win squirrel",
+    "build-lin-all": "npm run build-lin-portable && npm run build-lin-dir && npm run build-lin-appimage && npm run build-lin-snap && npm run build-lin-deb",
+    "build-lin-portable": "electron-builder --linux portable",
+    "build-lin-dir": "electron-builder --linux dir",
+    "build-lin-appimage": "electron-builder --linux AppImage",
+    "build-lin-snap": "electron-builder --linux snap",
+    "build-lin-deb": "electron-builder --linux deb",
+    "build-mac-all": "npm run build-mac-portable && npm run build-mac-dir && npm run build-mac-dmg && npm run build-mac-zip",
+    "build-mac-portable": "electron-builder --mac portable",
+    "build-mac-dir": "electron-builder --mac dir",
+    "build-mac-dmg": "electron-builder --mac dmg",
+    "build-mac-zip": "electron-builder --mac zip"
   },
   "keywords": [
     "electron",
@@ -20,7 +32,7 @@
     "ai",
     "tabs"
   ],
-  "author": "",
+  "author": "AnRkey",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
@@ -42,20 +54,31 @@
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         },
         {
           "target": "portable",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
+        },
+        {
+          "target": "squirrel",
+          "arch": ["x64"]
         }
       ],
       "icon": "src/assets/images/logo.png",
       "sign": null,
       "forceCodeSigning": false
+    },
+    "linux": {
+      "target": ["AppImage", "snap", "deb", "portable", "dir"],
+      "icon": "src/assets/images/logo.png",
+      "category": "Utility"
+    },
+    "mac": {
+      "target": ["dmg", "zip", "dir"],
+      "icon": "src/assets/images/logo.png",
+      "category": "public.app-category.utilities",
+      "identity": null
     },
     "nsis": {
       "oneClick": false,
@@ -66,13 +89,20 @@
       "artifactName": "AIB_Installer-v${version}.exe"
     },
     "portable": {
-      "artifactName": "AIB_Portable-v${version}.exe"
+      "artifactName": "AIB_Portable-v${version}.${ext}"
     },
     "asar": true,
     "asarUnpack": [],
-    "extraResources": [],
+    "extraResources": [
+      {
+        "from": "src/assets/images/",
+        "to": "assets/images/",
+        "filter": ["**/*"]
+      }
+    ],
     "files": [
-      "**/*",
+      "src/**/*",
+      "package.json",
       "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
       "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
       "!**/node_modules/*.d.ts",
