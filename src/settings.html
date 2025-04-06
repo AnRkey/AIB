@@ -404,7 +404,7 @@
             selectedSpeaker: document.getElementById('speaker-select').value
           };
           
-          window.electronAPI.saveSettings(newSettings)
+          window.api.settings.save(newSettings)
             .then(() => {
               // Update our tracking variables
               originalAlwaysOnTop = newSettings.alwaysOnTop;
@@ -491,7 +491,7 @@
 
       modalConfirm.addEventListener('click', () => {
         // Use IPC to communicate with main process to clear data
-        window.electronAPI.clearBrowsingData().then(() => {
+        window.api.settings.clearBrowsingData().then(() => {
           clearDataModal.classList.remove('active');
           // Show success message
           alert('All browsing data has been cleared successfully');
@@ -509,26 +509,31 @@
           console.log('Initializing settings...');
           
           // Get current settings
-          const settings = await window.api.invoke('get-settings');
+          const settings = await window.api.settings.get();
           console.log('Settings loaded:', settings);
           
           // Get audio devices
-          const audioDevices = await window.api.invoke('get-audio-devices');
+          const audioDevices = await window.api.settings.getAudioDevices();
           console.log('Audio devices loaded:', audioDevices);
           
           // Store original values for comparison
-          const originalMicrophone = settings.defaultMicrophone;
-          const originalSpeaker = settings.defaultSpeaker;
+          originalAlwaysOnTop = settings.alwaysOnTop || false;
+          originalMicrophone = settings.selectedMicrophone || '';
+          originalSpeaker = settings.selectedSpeaker || '';
           
           // Set initial values
-          document.getElementById('aot-startup').checked = settings.alwaysOnTopStartup;
+          document.getElementById('aot-startup').checked = originalAlwaysOnTop;
+          
+          // Get select elements
+          const microphoneSelect = document.getElementById('microphone-select');
+          const speakerSelect = document.getElementById('speaker-select');
           
           // Clear existing options
           microphoneSelect.innerHTML = '';
           speakerSelect.innerHTML = '';
           
           // Add microphones
-          if (audioDevices.microphones.length > 0) {
+          if (audioDevices && audioDevices.microphones && audioDevices.microphones.length > 0) {
             audioDevices.microphones.forEach(device => {
               const option = document.createElement('option');
               option.value = device.deviceId;
@@ -541,7 +546,7 @@
           }
           
           // Add speakers
-          if (audioDevices.speakers.length > 0) {
+          if (audioDevices && audioDevices.speakers && audioDevices.speakers.length > 0) {
             audioDevices.speakers.forEach(device => {
               const option = document.createElement('option');
               option.value = device.deviceId;
@@ -573,12 +578,18 @@
           saveButton.addEventListener('click', async function() {
             try {
               const newSettings = {
-                alwaysOnTopStartup: document.getElementById('aot-startup').checked,
-                defaultMicrophone: microphoneSelect.value,
-                defaultSpeaker: speakerSelect.value
+                alwaysOnTop: document.getElementById('aot-startup').checked,
+                selectedMicrophone: microphoneSelect.value,
+                selectedSpeaker: speakerSelect.value
               };
               
               await window.api.settings.save(newSettings);
+              
+              // Update original values after save
+              originalAlwaysOnTop = newSettings.alwaysOnTop;
+              originalMicrophone = newSettings.selectedMicrophone;
+              originalSpeaker = newSettings.selectedSpeaker;
+              
               saveButton.style.display = 'none';
               alert('Settings saved successfully!');
             } catch (error) {

@@ -339,9 +339,9 @@ function setupIpcHandlers() {
     try {
       // Load settings from storage or return defaults
       return {
-        alwaysOnTopStartup: false, // Default value
-        defaultMicrophone: '',
-        defaultSpeaker: ''
+        alwaysOnTop: settings ? settings.get('alwaysOnTop') : false,
+        selectedMicrophone: settings ? settings.get('selectedMicrophone') : '',
+        selectedSpeaker: settings ? settings.get('selectedSpeaker') : ''
       };
     } catch (error) {
       console.error('Error getting settings:', error);
@@ -350,11 +350,31 @@ function setupIpcHandlers() {
   });
   
   // Handle saving settings
-  ipcMain.handle('save-settings', async (event, settings) => {
+  ipcMain.handle('save-settings', async (event, newSettings) => {
     try {
       // Save settings to storage
-      // For now, just log them
-      console.log('Saving settings:', settings);
+      console.log('Saving settings:', newSettings);
+      
+      if (settings) {
+        // Save each setting to the store
+        if (newSettings.alwaysOnTop !== undefined) {
+          settings.set('alwaysOnTop', newSettings.alwaysOnTop);
+        }
+        
+        if (newSettings.selectedMicrophone !== undefined) {
+          settings.set('selectedMicrophone', newSettings.selectedMicrophone);
+        }
+        
+        if (newSettings.selectedSpeaker !== undefined) {
+          settings.set('selectedSpeaker', newSettings.selectedSpeaker);
+        }
+        
+        // Apply always-on-top setting immediately if mainWindow exists
+        if (mainWindow && newSettings.alwaysOnTop !== undefined) {
+          mainWindow.setAlwaysOnTop(newSettings.alwaysOnTop);
+        }
+      }
+      
       return true;
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -365,13 +385,21 @@ function setupIpcHandlers() {
   // Handle getting audio devices
   ipcMain.handle('get-audio-devices', async () => {
     try {
-      // Return mock audio devices for now
+      // In a production app, we would get real audio devices here
+      // using navigator.mediaDevices.enumerateDevices() in a renderer process
+      // or using system-specific APIs from the main process
+      
+      // For now, return mock audio devices
       return {
         microphones: [
-          { deviceId: 'default', label: 'Default Microphone' }
+          { deviceId: 'default', label: 'Default Microphone' },
+          { deviceId: 'mic1', label: 'Internal Microphone' },
+          { deviceId: 'mic2', label: 'External Microphone' }
         ],
         speakers: [
-          { deviceId: 'default', label: 'Default Speaker' }
+          { deviceId: 'default', label: 'Default Speaker' },
+          { deviceId: 'speaker1', label: 'Internal Speakers' },
+          { deviceId: 'speaker2', label: 'External Speakers' }
         ]
       };
     } catch (error) {
@@ -588,12 +616,35 @@ function setupIpcHandlers() {
   // Handle clearing browsing data
   ipcMain.handle('clear-browsing-data', async () => {
     try {
-      // Clear session data
-      const session = window.webContents.session;
-      await session.clearStorageData({
-        storages: ['appcache', 'cookies', 'filesystem', 'indexdb', 'localstorage', 'shadercache', 'websql', 'serviceworkers', 'cachestorage'],
+      if (shouldEnableDevTools) {
+        console.log('Clearing browsing data...');
+      }
+      
+      // Get the default session and clear all browser data
+      const ses = session.defaultSession;
+      
+      await ses.clearStorageData({
+        storages: [
+          'appcache',
+          'cookies',
+          'filesystem',
+          'indexdb',
+          'localstorage',
+          'shadercache',
+          'websql',
+          'serviceworkers',
+          'cachestorage'
+        ]
       });
-      await session.clearCache();
+      
+      await ses.clearCache();
+      
+      await ses.clearHostResolverCache();
+      
+      if (shouldEnableDevTools) {
+        console.log('Browsing data cleared successfully');
+      }
+      
       return true;
     } catch (error) {
       console.error('Error clearing browsing data:', error);

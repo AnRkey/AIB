@@ -12,8 +12,10 @@ contextBridge.exposeInMainWorld('api', {
     return Promise.reject(new Error(`Invalid channel: ${channel}`));
   },
   settings: {
+    get: () => ipcRenderer.invoke('get-settings'),
     save: (settings) => ipcRenderer.invoke('save-settings', settings),
-    clearBrowsingData: () => ipcRenderer.invoke('clear-browsing-data')
+    clearBrowsingData: () => ipcRenderer.invoke('clear-browsing-data'),
+    getAudioDevices: () => ipcRenderer.invoke('get-audio-devices')
   }
 });
 
