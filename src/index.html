@@ -735,6 +735,7 @@ Description: A desktop application that provides a convenient way to access vari
         this.tabsContainer.insertBefore(this.dragTab, toElement);
 
         this.updateTabWidths();
+        this.updateNewTabButtonVisibility();
       },
 
       // Set up context menu for a tab
@@ -963,7 +964,7 @@ Description: A desktop application that provides a convenient way to access vari
       
       // Check if a URL is for a menu tab (Settings, Support, Help, About)
       isMenuTab(url) {
-        const menuPages = ['settings.html', 'support.html', 'help.html', 'about.html'];
+        const menuPages = ['settings.html', 'support.html', 'help.html', 'about.html', 'contribute.html'];
         return menuPages.some(page => url.endsWith(page));
       },
       
@@ -974,7 +975,7 @@ Description: A desktop application that provides a convenient way to access vari
         // Get the rightmost tab (the last one in the array)
         const rightmostTab = this.tabs[this.tabs.length - 1];
         
-        // Show the new tab button only if the rightmost tab is a service tab
+        // Show the new tab button only if the rightmost tab is NOT a menu tab
         if (rightmostTab.isMenuTab) {
           this.newTabButton.style.display = 'none';
         } else {
