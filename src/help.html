@@ -3,35 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
-  <title>AIB Help</title>
+  <title>Help</title>
   <style>
-    /* Inherit variables from main app */
     :root {
-      /* These will be overridden by the parent styles.css */
+      /* Light mode colors (default) */
       --bg-color: #fff;
       --text-color: #333;
+      --section-bg: #f5f5f5;
       --border-color: #ddd;
-      --button-bg: #fff;
-      --button-hover-bg: #e9e9e9;
-      --button-active-bg: #007bff;
-      --button-active-text: white;
-      --shortcut-bg: #f5f5f5;
-      --shortcut-border: #ddd;
+      --heading-color: #007bff;
+      --link-color: #007bff;
+      --link-hover-color: #0056b3;
+      --card-bg: #f9f9f9;
+      --code-bg: #f1f1f1;
     }
 
-    /* Dark mode theme applied via media query when system uses dark mode */
+    /* Dark mode theme */
     @media (prefers-color-scheme: dark) {
       :root {
-        /* Dark mode colors */
         --bg-color: #222;
         --text-color: #eee;
+        --section-bg: #333;
         --border-color: #555;
-        --button-bg: #444;
-        --button-hover-bg: #555;
-        --button-active-bg: #0066cc;
-        --button-active-text: white;
-        --shortcut-bg: #333;
-        --shortcut-border: #444;
+        --heading-color: #4da6ff;
+        --link-color: #6bb0ff;
+        --link-hover-color: #a8d1ff;
+        --card-bg: #2a2a2a;
+        --code-bg: #2d2d2d;
       }
     }
 
@@ -41,6 +39,13 @@
       color: var(--text-color);
       margin: 0;
       padding: 20px;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
     }
 
     .help-container {
@@ -48,87 +53,182 @@
       margin: 0 auto;
     }
 
-    .help-header {
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
     h2 {
+      color: var(--heading-color);
       margin-top: 30px;
-      margin-bottom: 15px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid var(--border-color);
     }
 
     h3 {
-      margin-top: 20px;
-      color: var(--button-active-bg);
+      color: var(--heading-color);
     }
 
-    ul {
-      padding-left: 20px;
+    a {
+      color: var(--link-color);
+      text-decoration: none;
     }
 
-    li {
-      margin-bottom: 8px;
+    a:hover {
+      color: var(--link-hover-color);
+      text-decoration: underline;
     }
 
-    .shortcut {
-      background-color: var(--shortcut-bg);
-      padding: 2px 6px;
+    .help-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .help-section h3 {
+      margin-top: 0;
+    }
+
+    .shortcut-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    .shortcut-table th,
+    .shortcut-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .shortcut-table th {
+      background-color: var(--section-bg);
+      font-weight: bold;
+    }
+
+    .shortcut-key {
+      background-color: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 3px;
       font-family: monospace;
-      border: 1px solid var(--shortcut-border);
+      border: 1px solid var(--border-color);
+    }
+
+    .step-by-step {
+      margin-left: 20px;
+    }
+
+    .step-by-step li {
+      margin-bottom: 10px;
+    }
+
+    img {
+      max-width: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
   <div class="help-container">
-    <div class="help-header">
-      <h1>AIB Help</h1>
+    <h1>Help Center</h1>
+
+    <div class="help-section">
+      <h3>Getting Started with AI Browser</h3>
+      <p>AI Browser allows you to access multiple AI services in a single application with a tabbed interface.</p>
     </div>
 
-    <h2>Getting Started</h2>
-    <p>AIB is a desktop application that provides a convenient way to access various AI services in a tabbed browser interface. It offers a simple, clean interface optimized for AI interactions.</p>
-    
-    <h3>Using AIB</h3>
-    <ol>
-      <li>Click on one of the AI service buttons in the left sidebar (ChatGPT, Claude, Gemini, or Grok) to open that service in a new tab.</li>
-      <li>Use the tab bar to switch between different AI services.</li>
-      <li>The refresh button allows you to reload the current tab.</li>
-      <li>The "AOT" button toggles "Always on Top" mode, keeping the window visible while working in other applications.</li>
-      <li>The "+Window" button opens a new instance of AIB.</li>
-    </ol>
+    <h2>Basic Navigation</h2>
 
-    <h2>Features</h2>
-    <ul>
-      <li><strong>Tab-based browsing</strong> - Open multiple AI services at once and easily switch between them</li>
-      <li><strong>"Always on Top" mode</strong> - Keep the application visible while working in other windows</li>
-      <li><strong>Multiple instances</strong> - Launch multiple windows of the application</li>
-      <li><strong>Settings</strong> - Configure microphone, always-on-top behavior, and more</li>
-    </ul>
+    <div class="help-section">
+      <h3>Opening AI Services</h3>
+      <p>Click on any of the AI service buttons in the toolbar to open that service in a new tab:</p>
+      <ol class="step-by-step">
+        <li>Click <strong>ChatGPT</strong>, <strong>Claude</strong>, <strong>Gemini</strong>, or <strong>Grok</strong> button in the toolbar.</li>
+        <li>The service will open in a new tab.</li>
+        <li>You can have multiple services open simultaneously in different tabs.</li>
+      </ol>
+    </div>
 
-    <h2>Shortcuts</h2>
-    <ul>
-      <li><span class="shortcut">F12</span> - Toggle Developer Tools (if enabled)</li>
-      <li><span class="shortcut">Ctrl+Click</span> or <span class="shortcut">Middle Click</span> on links - Open in external browser</li>
-    </ul>
+    <div class="help-section">
+      <h3>Working with Tabs</h3>
+      <p>Manage your open tabs to multitask across different AI services:</p>
+      <ol class="step-by-step">
+        <li>Click on a tab to switch to it.</li>
+        <li>Click the × icon on a tab to close it.</li>
+        <li>Use the scroll buttons (< and >) to navigate when you have many tabs open.</li>
+      </ol>
+    </div>
+
+    <h2>Keyboard Shortcuts</h2>
+
+    <div class="help-section">
+      <p>AI Browser supports several keyboard shortcuts for efficient navigation:</p>
+      
+      <table class="shortcut-table">
+        <tr>
+          <th>Function</th>
+          <th>Shortcut</th>
+        </tr>
+        <tr>
+          <td>New Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">T</span></td>
+        </tr>
+        <tr>
+          <td>Close Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">W</span></td>
+        </tr>
+        <tr>
+          <td>Refresh</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">R</span> or <span class="shortcut-key">F5</span></td>
+        </tr>
+        <tr>
+          <td>Next Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">Tab</span></td>
+        </tr>
+        <tr>
+          <td>Previous Tab</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">Shift</span> + <span class="shortcut-key">Tab</span></td>
+        </tr>
+        <tr>
+          <td>Open DevTools</td>
+          <td><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">Shift</span> + <span class="shortcut-key">I</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <h2>Advanced Features</h2>
+
+    <div class="help-section">
+      <h3>Always on Top</h3>
+      <p>Keep the AI Browser window visible even when using other applications:</p>
+      <ol class="step-by-step">
+        <li>Click the <strong>AOT</strong> button in the toolbar.</li>
+        <li>The button will highlight when Always on Top is active.</li>
+        <li>Click again to disable Always on Top mode.</li>
+      </ol>
+    </div>
+
+    <div class="help-section">
+      <h3>Opening a New Window</h3>
+      <p>Create a new instance of AI Browser:</p>
+      <ol class="step-by-step">
+        <li>Click the <strong>+Window</strong> button in the toolbar.</li>
+        <li>A new AI Browser window will open.</li>
+        <li>Each window operates independently with its own tabs and settings.</li>
+      </ol>
+    </div>
 
     <h2>Troubleshooting</h2>
-    <h3>If a service isn't loading correctly:</h3>
-    <ol>
-      <li>Try clicking the refresh button in the toolbar</li>
-      <li>Check your internet connection</li>
-      <li>Make sure you have an account for the service you're trying to use</li>
-    </ol>
 
-    <h3>Audio or microphone not working:</h3>
-    <ol>
-      <li>Check the audio settings in the Settings menu</li>
-      <li>Make sure your microphone is properly connected and not muted</li>
-      <li>Verify you've granted microphone permissions to the application</li>
-    </ol>
+    <div class="help-section">
+      <h3>Common Issues</h3>
+      <p>If you encounter problems with AI Browser:</p>
+      <ul>
+        <li><strong>Service not loading:</strong> Click the refresh button or try reopening the tab.</li>
+        <li><strong>Login issues:</strong> Some services may require you to log in again after periods of inactivity.</li>
+        <li><strong>Performance problems:</strong> Close unused tabs to free up memory.</li>
+      </ul>
+      <p>If problems persist, visit the <a href="support.html">Support</a> page for more assistance.</p>
+    </div>
   </div>
 </body>
 </html> 

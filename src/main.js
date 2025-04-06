@@ -152,7 +152,7 @@ function createWindow() {
       allowRunningInsecureContent: false, // Don't allow running insecure content
       devTools: true // Always enable DevTools capability
     },
-    icon: path.join(__dirname, 'assets/images/logo.ico'),
+    icon: path.join(__dirname, './assets/images/logo.ico'),
     title: `AI Browser v${appVersion}`
   });
 
@@ -185,7 +185,7 @@ function createWindow() {
   setupPermissionHandling(newWindow);
 
   // Load the index.html file
-  newWindow.loadFile(path.join(__dirname, '../index.html'));
+  newWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Store the window reference
   if (!mainWindow) {
