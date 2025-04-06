@@ -430,10 +430,13 @@ Description: A desktop application that provides a convenient way to access vari
       background-color: var(--toolbar-bg);
       border: 1px solid var(--border-color);
       border-radius: 3px;
-      box-shadow: 0 2px 5px var(--button-shadow);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       display: none;
       flex-direction: column;
       z-index: 1001;
+      min-width: 150px;
+      padding: 4px 0;
+      backdrop-filter: blur(5px);
     }
 
     .dropdown-menu.show {
@@ -491,12 +494,6 @@ Description: A desktop application that provides a convenient way to access vari
     <div class="toolbar">
       <div class="left-controls">
         <button class="menu-button toolbar-button" title="Menu">☰</button>
-        <div id="dropdown-menu" class="dropdown-menu">
-          <button class="dropdown-item" data-url="file:///D:/Projects/AIB/src/settings.html">Settings</button>
-          <button data-url="file:///D:/Projects/AIB/src/about.html">About</button>
-          <button data-url="file:///D:/Projects/AIB/src/help.html">Help</button>
-          <button data-url="file:///D:/Projects/AIB/src/contribute.html">Contribute</button>
-        </div>
       </div>
       <div class="quick-access">
         <button class="toolbar-button" data-url="https://chat.openai.com">ChatGPT</button>
@@ -529,47 +526,47 @@ Description: A desktop application that provides a convenient way to access vari
     // Set up menu dropdown functionality
     function setupMenuDropdown() {
       const menuButton = document.querySelector('.menu-button');
-      const dropdownMenu = document.getElementById('dropdown-menu');
       
-      if (!menuButton || !dropdownMenu) {
-        console.warn('Menu elements not found');
+      if (!menuButton) {
+        console.warn('Menu button not found');
         return;
       }
       
-      // Toggle dropdown when clicking the menu button
+      // Show native Electron menu when clicking the menu button
       menuButton.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
-        const isVisible = dropdownMenu.classList.contains('show');
-        // Hide all other dropdowns first
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
-          menu.classList.remove('show');
-        });
-        // Toggle this dropdown
-        dropdownMenu.classList.toggle('show', !isVisible);
-        // Ensure the dropdown is on top
-        dropdownMenu.style.zIndex = '1001';
-      });
-      
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        // Only close if we're not clicking the menu button or inside the dropdown
-        if (!menuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-          dropdownMenu.classList.remove('show');
+        
+        // Define menu items with their IDs and labels
+        const menuItems = [
+          { id: 'settings', label: 'Settings' },
+          { id: 'about', label: 'About' },
+          { id: 'help', label: 'Help' },
+          { id: 'contribute', label: 'Contribute' }
+        ];
+        
+        // Show the native menu using our IPC handler
+        if (window.api) {
+          window.api.invoke('show-app-menu', menuItems)
+            .catch(err => console.error('Error showing app menu:', err));
         }
       });
       
-      // Prevent dropdown from closing when clicking inside it
-      dropdownMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
-      
-      // Set up menu item functionality
-      const menuItems = dropdownMenu.querySelectorAll('button');
-      menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-          const url = item.getAttribute('data-url');
-          if (url) {
+      // Handle menu item clicks
+      if (window.api) {
+        window.api.receive('menu-item-clicked', (itemId) => {
+          console.log('Menu item clicked:', itemId);
+          
+          // Map menu item IDs to URLs
+          const urlMap = {
+            'settings': 'file:///D:/Projects/AIB/src/settings.html',
+            'about': 'file:///D:/Projects/AIB/src/about.html',
+            'help': 'file:///D:/Projects/AIB/src/help.html',
+            'contribute': 'file:///D:/Projects/AIB/src/contribute.html'
+          };
+          
+          const url = urlMap[itemId];
+          if (url && tabManager) {
             // Check if there's already a tab with this URL
             const existingTab = tabManager.tabs.find(tab => tab.url === url);
             if (existingTab) {
@@ -579,12 +576,9 @@ Description: A desktop application that provides a convenient way to access vari
               // Otherwise, create a new tab
               tabManager.createTab(url);
             }
-            
-            // Close the dropdown
-            dropdownMenu.classList.remove('show');
           }
         });
-      });
+      }
     }
 
     // Wait for DOM to be ready before setting up menu

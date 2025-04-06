@@ -544,6 +544,37 @@ function setupIpcHandlers() {
     }
   });
 
+  // Handle temporarily hiding a WebContentsView for menu display
+  ipcMain.handle('temporary-hide-contents-view', (event, { tabId }) => {
+    const view = contentViews.get(tabId);
+    if (view) {
+      const window = BrowserWindow.fromWebContents(event.sender);
+      if (window) {
+        // Instead of making it invisible, move it down below the menu area
+        // (menu starts at y=34 and is typically around 150-200px tall)
+        const currentBounds = view.getBounds();
+        view.setBounds({ 
+          x: currentBounds.x, 
+          y: 200, // Move down below menu area
+          width: currentBounds.width, 
+          height: currentBounds.height - 166 // Adjust height to keep total window size same
+        });
+        return true;
+      }
+    }
+    return false;
+  });
+
+  // Handle restoring a temporarily hidden WebContentsView
+  ipcMain.handle('restore-contents-view', (event, { tabId, bounds }) => {
+    const view = contentViews.get(tabId);
+    if (view) {
+      view.setBounds(bounds);
+      return true;
+    }
+    return false;
+  });
+
   // Handle reloading a WebContentsView
   ipcMain.handle('reload-contents-view', (event, { tabId }) => {
     const view = contentViews.get(tabId);
@@ -568,6 +599,26 @@ function setupIpcHandlers() {
       console.error('Error clearing browsing data:', error);
       throw error;
     }
+  });
+
+  // Handle showing application menu
+  ipcMain.handle('show-app-menu', (event, menuItems) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    if (!window) return false;
+
+    const { Menu } = require('electron');
+    
+    const template = menuItems.map(item => ({
+      label: item.label,
+      click: () => {
+        window.webContents.send('menu-item-clicked', item.id);
+      }
+    }));
+    
+    const menu = Menu.buildFromTemplate(template);
+    menu.popup({ window });
+    
+    return true;
   });
 
   // Create settings window

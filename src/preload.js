@@ -10,6 +10,8 @@ function isValidChannel(channel) {
     'destroy-contents-view',
     'resize-contents-view',
     'reload-contents-view',
+    'temporary-hide-contents-view',
+    'restore-contents-view',
     'toggle-always-on-top',
     'get-always-on-top',
     'create-new-instance',
@@ -17,7 +19,9 @@ function isValidChannel(channel) {
     'get-settings',
     'save-settings',
     'get-audio-devices',
-    'clear-browsing-data'
+    'clear-browsing-data',
+    'show-app-menu',
+    'menu-item-clicked'
   ];
 
   // Also allow dynamic channels for specific tab events
