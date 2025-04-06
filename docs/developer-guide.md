@@ -88,9 +88,9 @@ The main Electron process that:
 
 ### Preload Script (`preload.js`)
 
-A script that runs in the context of the webview before the web content loads, which:
+A script that runs in the context of the WebContentsView before the web content loads, which:
 - Bridges between the renderer process and Node.js/Electron APIs
-- Exposes selected APIs to the webview content safely
+- Exposes selected APIs to the WebContentsView content safely
 
 ### Settings Implementation (`settings.html` and `settings-preload.js`)
 
@@ -112,7 +112,7 @@ Handles user interface interactions:
 
 The application uses a consistent user-agent string across all web requests:
 - Set at the session level in `main.js` using `webRequest.onBeforeSendHeaders`
-- Set on each webview element via the `useragent` attribute 
+- Set on each WebContentsView element via the `useragent` attribute 
 - Current user-agent: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36`
 - This ensures consistent site compatibility and identification
 
@@ -216,12 +216,12 @@ When adding new features, follow these guidelines:
 When running in development mode, you can access the Developer Tools:
 
 1. Press `Ctrl+Shift+I` to open the main window's Developer Tools
-2. Right-click on a webview and select "Inspect Element" to open Developer Tools for that webview
+2. Right-click on a WebContentsView and select "Inspect Element" to open Developer Tools for that view
 3. Use the `--enable-devtools` flag with `npm run dev` to enable DevTools in production builds
 
 ### Common Issues
 
-1. **Webview Not Loading**
+1. **WebContentsView Not Loading**
    - Check the Content Security Policy in `index.html`
    - Verify the URL is correctly formatted
    - Check browser console for errors

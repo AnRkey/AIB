@@ -1,4 +1,4 @@
-# AIB - AI Browser v1.0.0-b4
+# AIB - AI Browser v1.0.0-b5
 
 ![Logo](src/assets/images/logo.png)
 
@@ -21,11 +21,11 @@ AI Browser (AIB) is an Electron-based desktop application that provides a conven
 - Chrome 134 user-agent for optimal compatibility with AI services
 
 ## Download
-[Download AIB_Installer-v1.0.0-b4.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b4/AIB_Installer-v1.0.0-b4.exe)
+[Download AIB_Installer-v1.0.0-b5.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b5/AIB_Installer-v1.0.0-b5.exe)
 
-[Download AIB_Portable-v1.0.0-b4.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b4/AIB_Portable-v1.0.0-b4.exe)
+[Download AIB_Portable-v1.0.0-b5.exe](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b5/AIB_Portable-v1.0.0-b5.exe)
 
-[Download AIB_Portable-v1.0.0-b4.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b4/AIB_Portable-v1.0.0-b4.zip)
+[Download AIB_Portable-v1.0.0-b5.zip](https://github.com/AnRkey/AIB/releases/download/v1.0.0-b5/AIB_Portable-v1.0.0-b5.zip)
 
 ## Prerequisites for use
 - Windows 10 or 11

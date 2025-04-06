@@ -1,10 +1,12 @@
 {
   "name": "aib",
-  "version": "1.0.0-b4",
+  "version": "1.0.0-b5",
   "description": "AI Browser application for accessing various AI services",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
+    "dev": "electron . --enable-logging --enable-devtools",
+    "debug": "electron . --inspect=5858 --enable-logging",
     "clean-win-all": "powershell -NoProfile -Command if (Test-Path -Path .\\build\\) { Remove-Item -Path .\\build\\ -Recurse -Force -Verbose }",
     "clean-lin-all": "test -d ./build && rm -rf ./build",
     "clean-mac-all": "test -d ./build && rm -rf ./build",
@@ -54,15 +56,21 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "squirrel",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "src/assets/images/logo.png",
@@ -70,12 +78,22 @@
       "forceCodeSigning": false
     },
     "linux": {
-      "target": ["AppImage", "snap", "deb", "portable", "dir"],
+      "target": [
+        "AppImage",
+        "snap",
+        "deb",
+        "portable",
+        "dir"
+      ],
       "icon": "src/assets/images/logo.png",
       "category": "Utility"
     },
     "mac": {
-      "target": ["dmg", "zip", "dir"],
+      "target": [
+        "dmg",
+        "zip",
+        "dir"
+      ],
       "icon": "src/assets/images/logo.png",
       "category": "public.app-category.utilities",
       "identity": null
@@ -97,7 +115,16 @@
       {
         "from": "src/assets/images/",
         "to": "assets/images/",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "src/",
+        "to": "src/",
+        "filter": [
+          "*.html"
+        ]
       }
     ],
     "files": [

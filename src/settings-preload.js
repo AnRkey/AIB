@@ -2,19 +2,19 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 // Expose a limited set of Electron APIs safely to the renderer process
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld('api', {
   // Settings-related functions
-  getSettings: () => ipcRenderer.invoke('get-settings'),
-  saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
-  
-  // Audio devices
-  getAudioDevices: () => ipcRenderer.invoke('get-audio-devices'),
-  
-  // Proxy settings
-  openSystemProxySettings: () => ipcRenderer.invoke('open-system-proxy-settings'),
-  
-  // Data clearing
-  clearBrowsingData: () => ipcRenderer.invoke('clear-browsing-data')
+  invoke: (channel, data) => {
+    const validChannels = ['get-settings', 'save-settings', 'get-audio-devices', 'open-system-proxy-settings', 'clear-browsing-data'];
+    if (validChannels.includes(channel)) {
+      return ipcRenderer.invoke(channel, data);
+    }
+    return Promise.reject(new Error(`Invalid channel: ${channel}`));
+  },
+  settings: {
+    save: (settings) => ipcRenderer.invoke('save-settings', settings),
+    clearBrowsingData: () => ipcRenderer.invoke('clear-browsing-data')
+  }
 });
 
 // Log that preload script has been loaded

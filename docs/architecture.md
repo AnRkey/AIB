@@ -22,15 +22,15 @@ AIB uses Electron's main process and renderer process architecture:
 2. **Renderer Process** (HTML, CSS, JavaScript in the browser window)
    - Handles the UI and user interactions
    - Contains the tab management system
-   - Manages webviews that display the AI services
+   - Manages WebContentsView that display the AI services
 
 3. **Settings Window Process**
    - Dedicated window for application settings
    - Communicates with main process via IPC
    - Handles user preferences and configuration
 
-4. **Webview Processes**
-   - Each webview runs in its own separate process
+4. **WebContentsView Processes**
+   - Each WebContentsView runs in its own separate process
    - Loads and displays external AI services
    - Isolated from the main application
 
@@ -94,15 +94,15 @@ AIB uses Electron's main process and renderer process architecture:
   - Configuration applied across application instances
   - Real-time updates when settings change
 
-### Webview Management
+### WebContentsView Management
 
-- **Webview Creation and Configuration**
+- **WebContentsView Creation and Configuration**
   - Created dynamically when opening new tabs
   - Configured with appropriate permissions
   - Event listeners for page navigation
   - Standardized Chrome 134 user-agent string for consistent site compatibility
 
-- **Webview Communication**
+- **WebContentsView Communication**
   - Event handling for page-title-updated and page-favicon-updated
   - Permission handling for media access and other features
 
@@ -110,8 +110,8 @@ AIB uses Electron's main process and renderer process architecture:
 
 1. **User Interaction Flow**
    - User clicks an AI service button in the toolbar
-   - Tab Manager creates a new tab and webview
-   - Webview loads the requested AI service URL
+   - Tab Manager creates a new tab and WebContentsView
+   - WebContentsView loads the requested AI service URL
    - Tab is activated and displays the content
 
 2. **Tab Management Flow**
@@ -160,7 +160,7 @@ The application is heavily event-driven:
 
 - DOM events for user interactions
 - Electron events for system operations
-- Webview events for content interactions
+- WebContentsView events for content interactions
 - Settings change events for configuration updates
 
 ### Separation of Concerns
@@ -170,7 +170,7 @@ The code is organized to separate:
 - Tab management logic (tabManager)
 - UI event handling (DOM event listeners)
 - System operations (IPC to main process)
-- Content display (webviews)
+- Content display (WebContentsView)
 - Settings management (dedicated window and storage)
 
 ## Security Considerations
@@ -179,13 +179,13 @@ The code is organized to separate:
    - Defined in index.html to restrict script execution
    - Controls what resources can be loaded
 
-2. **Webview Isolation**
-   - Each webview runs in a separate process
+2. **WebContentsView Isolation**
+   - Each WebContentsView runs in a separate process
    - Prevents cross-site scripting between AI services
 
 3. **Permission Handling**
    - Explicit permission controls for features like microphone access
-   - Controlled through the webview permission-request event
+   - Controlled through the WebContentsView permission-request event
 
 4. **Browser Fingerprinting**
    - Consistent user-agent string across the application
@@ -199,7 +199,7 @@ The code is organized to separate:
 ## Performance Considerations
 
 1. **Process Isolation**
-   - Each webview in a separate process for stability
+   - Each WebContentsView in a separate process for stability
    - Main application remains responsive if a service crashes
 
 2. **Resource Management**

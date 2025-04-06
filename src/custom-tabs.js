@@ -1,6 +1,8 @@
 /**
  * A simple custom tabs implementation for Electron
  */
+const { BrowserView } = window.api.require('electron');
+
 class CustomTabGroup {
   constructor(options = {}) {
     this.options = options;
@@ -55,68 +57,125 @@ class CustomTabGroup {
 class CustomTab {
   constructor(tabGroup, options = {}) {
     this.tabGroup = tabGroup;
+    this.id = options.id;
     this.title = options.title || 'New Tab';
     this.src = options.src || '';
-    this.webviewAttributes = {
-      useragent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-      ...options.webviewAttributes
-    };
+    this.view = options.view;
+    this.tab = options.tab;
+    this.titleElement = options.titleElement;
+    this.faviconElement = options.faviconElement;
+    this.browserView = null;
+    this.setupBrowserView();
+  }
+
+  setupBrowserView() {
+    const { remote } = window.api.require('electron');
+    const mainWindow = remote.getCurrentWindow();
     
-    this.element = document.createElement('div');
-    this.element.classList.add('etabs-tab');
-    this.element.innerHTML = `
-      <div class="etabs-tab-title">${this.title}</div>
-      <div class="etabs-tab-buttons">
-        <button class="etabs-tab-button-close">×</button>
-      </div>
-    `;
-    
-    this.view = document.createElement('div');
-    this.view.classList.add('etabs-view');
-    
-    this.webview = document.createElement('webview');
-    this.webview.src = this.src;
-    
-    // Apply webview attributes
-    for (const [key, value] of Object.entries(this.webviewAttributes)) {
-      this.webview.setAttribute(key, value);
+    this.browserView = new BrowserView({
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        webSecurity: true,
+        allowRunningInsecureContent: false,
+        sandbox: true,
+        enableWebSQL: false,
+        enableRemoteModule: false,
+        spellcheck: false,
+        enableBlinkFeatures: false,
+        disableBlinkFeatures: false,
+        defaultFontFamily: false,
+        defaultFontSize: false,
+        defaultMonospaceFontSize: false,
+        minimumFontSize: false,
+        defaultEncoding: false,
+        backgroundThrottling: true,
+        images: true,
+        javascript: true,
+        webgl: true,
+        plugins: false,
+        experimentalFeatures: false,
+        scrollBounce: false,
+        enablePreferredSizeMode: false,
+        navigateOnDragDrop: false,
+        autoplayPolicy: false,
+        disableHtmlFullscreenWindowResize: false
+      }
+    });
+
+    // Set the bounds of the BrowserView
+    const bounds = mainWindow.getBounds();
+    this.browserView.setBounds({ x: 0, y: 0, width: bounds.width, height: bounds.height });
+
+    // Add the BrowserView to the window
+    mainWindow.addBrowserView(this.browserView);
+
+    // Load the URL if provided
+    if (this.src) {
+      this.browserView.webContents.loadURL(this.src);
     }
-    
-    this.view.appendChild(this.webview);
-    
-    // Add to DOM
-    this.tabGroup.tabsContainer.appendChild(this.element);
-    this.tabGroup.viewsContainer.appendChild(this.view);
-    
-    // Set up event listeners
-    this.element.addEventListener('click', () => {
-      this.tabGroup.setActiveTab(this);
+
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    if (!this.browserView) return;
+
+    const webContents = this.browserView.webContents;
+
+    // Update title when page title changes
+    webContents.on('page-title-updated', (event, title) => {
+      this.title = title;
+      if (this.titleElement) {
+        this.titleElement.textContent = title;
+      }
     });
-    
-    this.element.querySelector('.etabs-tab-button-close').addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.tabGroup.removeTab(this);
+
+    // Update favicon when it changes
+    webContents.on('page-favicon-updated', (event, favicons) => {
+      if (this.faviconElement && favicons.length > 0) {
+        this.faviconElement.src = favicons[0];
+      }
+    });
+
+    // Handle new window requests
+    webContents.setWindowOpenHandler(({ url }) => {
+      const { shell } = window.api.require('electron');
+      shell.openExternal(url);
+      return { action: 'deny' };
+    });
+
+    // Handle console messages
+    webContents.on('console-message', (event, level, message, line, sourceId) => {
+      console.log(`[${this.title}] ${message}`);
     });
   }
 
-  setTitle(title) {
-    this.title = title;
-    this.element.querySelector('.etabs-tab-title').textContent = title;
+  show() {
+    if (this.browserView) {
+      this.browserView.setBounds({ x: 0, y: 0, width: 1200, height: 800 });
+    }
   }
 
-  activate() {
-    this.element.classList.add('active');
-    this.view.classList.add('active');
+  hide() {
+    if (this.browserView) {
+      this.browserView.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+    }
   }
 
-  deactivate() {
-    this.element.classList.remove('active');
-    this.view.classList.remove('active');
+  reload() {
+    if (this.browserView) {
+      this.browserView.webContents.reload();
+    }
   }
 
   destroy() {
-    this.element.remove();
-    this.view.remove();
+    if (this.browserView) {
+      const { remote } = window.api.require('electron');
+      const mainWindow = remote.getCurrentWindow();
+      mainWindow.removeBrowserView(this.browserView);
+      this.browserView = null;
+    }
   }
 }
 

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self';">
   <title>AIB Settings</title>
   <style>
     /* Inherit variables from main app */
@@ -501,44 +501,29 @@
       // Settings functionality
       async function initSettings() {
         try {
-          // Load saved settings
-          const settings = await window.electronAPI.getSettings();
+          // Check if the API is available
+          if (!window.api) {
+            throw new Error('API not available - make sure preload script is working');
+          }
           
-          // Store original settings
-          originalAlwaysOnTop = settings.alwaysOnTop || false;
-          originalMicrophone = settings.selectedMicrophone || '';
-          originalSpeaker = settings.selectedSpeaker || '';
+          console.log('Initializing settings...');
           
-          console.log('Initial settings loaded:', {
-            alwaysOnTop: originalAlwaysOnTop,
-            mic: originalMicrophone,
-            speaker: originalSpeaker
-          });
+          // Get current settings
+          const settings = await window.api.invoke('get-settings');
+          console.log('Settings loaded:', settings);
           
-          // Populate form with saved settings
-          document.getElementById('aot-startup').checked = originalAlwaysOnTop;
+          // Get audio devices
+          const audioDevices = await window.api.invoke('get-audio-devices');
+          console.log('Audio devices loaded:', audioDevices);
           
-          // Add event listener for system proxy button
-          document.getElementById('open-system-proxy').addEventListener('click', () => {
-            try {
-              // Call the IPC method directly
-              window.electronAPI.openSystemProxySettings()
-                .catch(error => {
-                  console.error('Error opening system proxy settings:', error.message);
-                  alert('Failed to open system proxy settings: ' + error.message);
-                });
-            } catch (error) {
-              alert('Failed to open system proxy settings: ' + error.message);
-            }
-          });
+          // Store original values for comparison
+          const originalMicrophone = settings.defaultMicrophone;
+          const originalSpeaker = settings.defaultSpeaker;
           
-          // Get and populate audio devices
-          const audioDevices = await window.electronAPI.getAudioDevices();
+          // Set initial values
+          document.getElementById('aot-startup').checked = settings.alwaysOnTopStartup;
           
-          const microphoneSelect = document.getElementById('microphone-select');
-          const speakerSelect = document.getElementById('speaker-select');
-          
-          // Clear the default options
+          // Clear existing options
           microphoneSelect.innerHTML = '';
           speakerSelect.innerHTML = '';
           
@@ -583,6 +568,37 @@
           document.getElementById('aot-startup').addEventListener('change', checkForChanges);
           microphoneSelect.addEventListener('change', checkForChanges);
           speakerSelect.addEventListener('change', checkForChanges);
+          
+          // Add save button handler
+          saveButton.addEventListener('click', async function() {
+            try {
+              const newSettings = {
+                alwaysOnTopStartup: document.getElementById('aot-startup').checked,
+                defaultMicrophone: microphoneSelect.value,
+                defaultSpeaker: speakerSelect.value
+              };
+              
+              await window.api.settings.save(newSettings);
+              saveButton.style.display = 'none';
+              alert('Settings saved successfully!');
+            } catch (error) {
+              console.error('Error saving settings:', error);
+              alert('Failed to save settings: ' + error.message);
+            }
+          });
+          
+          // Add clear data button handler
+          document.getElementById('clear-data').addEventListener('click', async function() {
+            if (confirm('Are you sure you want to clear all browsing data? This cannot be undone.')) {
+              try {
+                await window.api.settings.clearBrowsingData();
+                alert('Browsing data cleared successfully!');
+              } catch (error) {
+                console.error('Error clearing data:', error);
+                alert('Failed to clear data: ' + error.message);
+              }
+            }
+          });
           
         } catch (error) {
           console.error('Error initializing settings:', error);
