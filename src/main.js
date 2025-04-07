@@ -129,15 +129,40 @@ function createWindow() {
 
   // Handle window closed event
   window.on('closed', () => {
-    // Remove from our windows array
-    const index = windows.indexOf(window);
-    if (index !== -1) {
-      windows.splice(index, 1);
-    }
-    
-    // If this was the main window, update reference
-    if (window === mainWindow) {
-      mainWindow = windows.length > 0 ? windows[0] : null;
+    try {
+      // First, remove all BrowserViews
+      const views = window.getBrowserViews();
+      views.forEach(view => {
+        try {
+          if (view && view.webContents) {
+            view.webContents.removeAllListeners();
+          }
+          window.removeBrowserView(view);
+        } catch (e) {
+          console.error('Error removing BrowserView:', e);
+        }
+      });
+
+      // Then clean up window event listeners
+      if (window.webContents) {
+        window.webContents.removeAllListeners();
+      }
+
+      // Remove from our windows array
+      const index = windows.indexOf(window);
+      if (index !== -1) {
+        windows.splice(index, 1);
+      }
+
+      // If this was the main window, update reference
+      if (window === mainWindow) {
+        mainWindow = windows.length > 0 ? windows[0] : null;
+      }
+
+      // Clean up any references to the window
+      window = null;
+    } catch (e) {
+      console.error('Error in window closed handler:', e);
     }
   });
 
