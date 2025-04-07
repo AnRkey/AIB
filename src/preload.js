@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const packageInfo = require('../package.json');
+const path = require('path');
 
 // Validate channel name against allowed patterns
 function isValidChannel(channel) {
@@ -58,6 +59,12 @@ contextBridge.exposeInMainWorld(
     // Get the version of the application
     getVersion: () => {
       return packageInfo.version;
+    },
+    // Get proper file URL for local files
+    getFileUrl: (filename) => {
+      // Create proper file URL that works in packaged app
+      const filePath = path.join(__dirname, filename);
+      return `file://${filePath}`;
     },
     // Handle IPC calls
     invoke: (channel, data) => {

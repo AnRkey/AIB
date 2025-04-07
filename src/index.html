@@ -559,10 +559,10 @@ Description: A desktop application that provides a convenient way to access vari
           
           // Map menu item IDs to URLs
           const urlMap = {
-            'settings': 'file:///D:/Projects/AIB/src/settings.html',
-            'about': 'file:///D:/Projects/AIB/src/about.html',
-            'help': 'file:///D:/Projects/AIB/src/help.html',
-            'contribute': 'file:///D:/Projects/AIB/src/contribute.html'
+            'settings': window.api.getFileUrl('settings.html'),
+            'about': window.api.getFileUrl('about.html'),
+            'help': window.api.getFileUrl('help.html'),
+            'contribute': window.api.getFileUrl('contribute.html')
           };
           
           const url = urlMap[itemId];

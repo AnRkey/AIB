@@ -10,11 +10,10 @@
     "clean-win-all": "powershell -NoProfile -Command if (Test-Path -Path .\\build\\) { Remove-Item -Path .\\build\\ -Recurse -Force -Verbose }",
     "clean-lin-all": "test -d ./build && rm -rf ./build",
     "clean-mac-all": "test -d ./build && rm -rf ./build",
-    "build-win-all": "electron-builder --win dir nsis portable squirrel",
+    "build-win-all": "electron-builder --win dir nsis portable",
     "build-win-dir": "electron-builder --win dir",
     "build-win-nsis": "electron-builder --win nsis",
     "build-win-portable": "electron-builder --win portable",
-    "build-win-squirrel": "electron-builder --win squirrel",
     "build-lin-all": "electron-builder --linux dir AppImage snap deb portable",
     "build-lin-dir": "electron-builder --linux dir",
     "build-lin-appimage": "electron-builder --linux AppImage",
@@ -61,12 +60,6 @@
         },
         {
           "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "squirrel",
           "arch": [
             "x64"
           ]
